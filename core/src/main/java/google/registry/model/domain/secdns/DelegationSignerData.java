@@ -36,8 +36,7 @@ public class DelegationSignerData extends ImmutableObject {
   private DelegationSignerData() {}
 
   /** The identifier for this particular key in the domain. */
-  @javax.persistence.Id
-  int keyTag;
+  @javax.persistence.Id int keyTag;
 
   /**
    * The algorithm used by this key.

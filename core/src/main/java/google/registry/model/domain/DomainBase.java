@@ -132,10 +132,10 @@ public class DomainBase extends EppResource
   @ElementCollection Set<DesignatedContact> allContacts;
 
   /** Authorization info (aka transfer secret) of the domain. */
-  @Embedded 
+  @Embedded
   @AttributeOverrides({
-      @AttributeOverride(name = "pw.value", column = @Column(name = "auth_info_value")),
-      @AttributeOverride(name = "pw.repoId", column = @Column(name = "auth_info_repo_id")),
+    @AttributeOverride(name = "pw.value", column = @Column(name = "auth_info_value")),
+    @AttributeOverride(name = "pw.repoId", column = @Column(name = "auth_info_repo_id")),
   })
   DomainAuthInfo authInfo;
 
@@ -152,19 +152,18 @@ public class DomainBase extends EppResource
    * {@literal @}XmlTransient because it's not returned in an info response.
    */
   @IgnoreSave(IfNull.class)
-  @Embedded 
+  @Embedded
   @AttributeOverrides({
-      @AttributeOverride(name = "noticeId.tcnId", column = @Column(name = "launch_notice_tcn_id")),
-      @AttributeOverride(
-          name = "noticeId.validatorId", 
-          column = @Column(name = "launch_notice_validator_id")),
-      @AttributeOverride(
-          name = "expirationTime", 
-          column = @Column(name = "launch_notice_expiration_time")),
-      @AttributeOverride(
-          name = "acceptedTime", 
-          column = @Column(name = "launch_notice_accepted_time")),
-      
+    @AttributeOverride(name = "noticeId.tcnId", column = @Column(name = "launch_notice_tcn_id")),
+    @AttributeOverride(
+        name = "noticeId.validatorId",
+        column = @Column(name = "launch_notice_validator_id")),
+    @AttributeOverride(
+        name = "expirationTime",
+        column = @Column(name = "launch_notice_expiration_time")),
+    @AttributeOverride(
+        name = "acceptedTime",
+        column = @Column(name = "launch_notice_accepted_time")),
   })
   LaunchNotice launchNotice;
 
@@ -225,27 +224,27 @@ public class DomainBase extends EppResource
   /** Data about any pending or past transfers on this domain. */
   @Embedded
   @AttributeOverrides({
-      @AttributeOverride(
-          name = "transferRequestTrid", 
-          column = @Column(name = "transfer_data_request_trid")),
-      @AttributeOverride(
-          name = "transferPeriod", 
-          column = @Column(name = "transfer_data_transfer_period")),
-      @AttributeOverride(
-          name = "transferredRegistrationExpirationTime", 
-          column = @Column(name = "transfer_data_registration_expiration_time")),
-      @AttributeOverride(
-          name = "serverApproveEntities", 
-          column = @Column(name = "transfer_data_server_approve_entities")),
-      @AttributeOverride(
-          name = "serverApproveBillingEvent", 
-          column = @Column(name = "transfer_data_server_approve_billing_event")),
-      @AttributeOverride(
-          name = "serverApproveAutorenewEvent", 
-          column = @Column(name = "transfer_data_server_approve_autorenrew_event")),
-      @AttributeOverride(
-          name = "serverApproveAutorenewPollMessage", 
-          column = @Column(name = "transfer_data_server_approve_autorenrew_poll_message")),
+    @AttributeOverride(
+        name = "transferRequestTrid",
+        column = @Column(name = "transfer_data_request_trid")),
+    @AttributeOverride(
+        name = "transferPeriod",
+        column = @Column(name = "transfer_data_transfer_period")),
+    @AttributeOverride(
+        name = "transferredRegistrationExpirationTime",
+        column = @Column(name = "transfer_data_registration_expiration_time")),
+    @AttributeOverride(
+        name = "serverApproveEntities",
+        column = @Column(name = "transfer_data_server_approve_entities")),
+    @AttributeOverride(
+        name = "serverApproveBillingEvent",
+        column = @Column(name = "transfer_data_server_approve_billing_event")),
+    @AttributeOverride(
+        name = "serverApproveAutorenewEvent",
+        column = @Column(name = "transfer_data_server_approve_autorenrew_event")),
+    @AttributeOverride(
+        name = "serverApproveAutorenewPollMessage",
+        column = @Column(name = "transfer_data_server_approve_autorenrew_poll_message")),
   })
   TransferData transferData;
 

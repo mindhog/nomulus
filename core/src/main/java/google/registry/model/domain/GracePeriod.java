@@ -31,8 +31,8 @@ import org.joda.time.DateTime;
 /**
  * A domain grace period with an expiration time.
  *
- * <p>When a grace period expires, it is lazily removed from the {@link DomainBase} the next
- * time the resource is loaded from Datastore.
+ * <p>When a grace period expires, it is lazily removed from the {@link DomainBase} the next time
+ * the resource is loaded from Datastore.
  */
 @Embed
 @javax.persistence.Entity

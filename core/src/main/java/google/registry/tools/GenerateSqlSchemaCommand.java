@@ -36,8 +36,8 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.hibernate.tool.schema.TargetType;
-import org.testcontainers.containers.PostgreSQLContainer;
 import org.joda.time.Period;
+import org.testcontainers.containers.PostgreSQLContainer;
 
 /**
  * Generates a schema for JPA annotated classes using Hibernate.

@@ -72,7 +72,8 @@ public class LaunchNotice extends ImmutableObject {
   }
 
   @XmlElement(name = "noticeID")
-  @Embedded NoticeIdType noticeId;
+  @Embedded
+  NoticeIdType noticeId;
 
   @XmlElement(name = "notAfter")
   DateTime expirationTime;

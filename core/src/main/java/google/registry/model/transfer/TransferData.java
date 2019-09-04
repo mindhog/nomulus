@@ -36,8 +36,8 @@ import javax.persistence.Embedded;
 import org.joda.time.DateTime;
 
 /**
- * Common transfer data for {@link EppResource} types. Only applies to domains and contacts;
- * hosts are implicitly transferred with their superordinate domain.
+ * Common transfer data for {@link EppResource} types. Only applies to domains and contacts; hosts
+ * are implicitly transferred with their superordinate domain.
  */
 @Embed
 @Unindex
