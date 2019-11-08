@@ -22,7 +22,6 @@ import google.registry.model.transaction.JpaTransactionManagerRule;
 import java.sql.Timestamp;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import org.hibernate.cfg.Environment;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Rule;
@@ -36,10 +35,7 @@ public class DateTimeConverterTest {
 
   @Rule
   public final JpaTransactionManagerRule jpaTmRule =
-      new JpaTransactionManagerRule.Builder()
-          .withEntityClass(TestEntity.class)
-          .withProperty(Environment.HBM2DDL_AUTO, "update")
-          .build();
+      new JpaTransactionManagerRule.Builder().withEntityClass(TestEntity.class).build();
 
   private final DateTimeConverter converter = new DateTimeConverter();
 
