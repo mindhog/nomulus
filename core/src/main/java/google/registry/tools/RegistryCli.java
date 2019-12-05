@@ -106,7 +106,6 @@ final class RegistryCli implements AutoCloseable, CommandRunner {
     // run.
     try {
       for (Map.Entry<String, ? extends Class<? extends Command>> entry : commands.entrySet()) {
-        System.err.println("adding command " + entry.getKey());
         Command command = entry.getValue().getDeclaredConstructor().newInstance();
         jcommander.addCommand(entry.getKey(), command);
       }
