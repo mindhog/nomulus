@@ -14,6 +14,7 @@
 
 package google.registry.model.ofy;
 
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static google.registry.model.ofy.ObjectifyService.ofy;
 
 import com.google.common.collect.ImmutableCollection;
@@ -22,6 +23,7 @@ import google.registry.persistence.VKey;
 import google.registry.persistence.transaction.TransactionManager;
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.StreamSupport;
 import org.joda.time.DateTime;
 
 /** Datastore implementation of {@link TransactionManager}. */
