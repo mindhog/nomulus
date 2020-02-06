@@ -117,7 +117,7 @@ public abstract class EppResource extends BackupGroupRoot implements Buildable {
   DateTime lastEppUpdateTime;
 
   /** Status values associated with this resource. */
-  @Type(type = "google.registry.model.eppcommon.StatusValue$StatusValueSetType")
+  @Type(type = "google.registry.model.eppcommon.StatusValueSetType")
   @Column(name = "statuses")
   // TODO(mmuller): rename to "statuses" once we're off datastore.
   Set<StatusValue> status;

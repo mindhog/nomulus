@@ -49,24 +49,18 @@ public class EnumSetUserTypeTest {
     assertThat(persisted.data).isEqualTo(enums);
   }
 
+  @EnumSet
   enum TestEnum {
     FOO,
     BAR,
     BAZ;
-
-    public static class TestEnumType extends EnumSetUserType<TestEnum> {
-      @Override
-      protected TestEnum convertToElem(String value) {
-        return TestEnum.valueOf(value);
-      }
-    }
   }
 
   @Entity(name = "TestEntity")
   static class TestEntity {
     @Id String name;
 
-    @Type(type = "google.registry.persistence.EnumSetUserTypeTest$TestEnum$TestEnumType")
+    @Type(type = "google.registry.persistence.EnumSetUserTypeTest_TestEnumSetType")
     Set<TestEnum> data;
 
     TestEntity() {}

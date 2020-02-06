@@ -25,7 +25,7 @@ import google.registry.model.domain.DomainBase;
 import google.registry.model.host.HostResource;
 import google.registry.model.translators.EnumToAttributeAdapter.EppEnum;
 import google.registry.model.translators.StatusValueAdapter;
-import google.registry.persistence.EnumSetUserType;
+import google.registry.persistence.EnumSet;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
@@ -44,6 +44,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  * @see <a href="https://tools.ietf.org/html/rfc5732#section-2.3">RFC 5732 (Host) Section 2.3</a>
  * @see <a href="https://tools.ietf.org/html/rfc5733#section-2.2">RFC 5733 (Contact) Section 2.2</a>
  */
+@EnumSet
 @XmlJavaTypeAdapter(StatusValueAdapter.class)
 public enum StatusValue implements EppEnum {
   CLIENT_DELETE_PROHIBITED(AllowedOn.ALL),
@@ -164,13 +165,5 @@ public enum StatusValue implements EppEnum {
 
   public static StatusValue fromXmlName(String xmlName) {
     return StatusValue.valueOf(LOWER_CAMEL.to(UPPER_UNDERSCORE, nullToEmpty(xmlName)));
-  }
-
-  /** Hibernate type for sets of {@link StatusValue}. */
-  public static class StatusValueSetType extends EnumSetUserType<StatusValue> {
-    @Override
-    protected StatusValue convertToElem(String value) {
-      return StatusValue.valueOf(value);
-    }
   }
 }
