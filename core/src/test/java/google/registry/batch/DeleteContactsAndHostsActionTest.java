@@ -614,7 +614,7 @@ public class DeleteContactsAndHostsActionTest
         .hasDeletionTime(END_OF_TIME);
     DomainBase domain =
         loadByForeignKey(DomainBase.class, "example.tld", clock.nowUtc()).get();
-    assertThat(domain.getNameservers()).contains(Key.create(hostAfter));
+    assertThat(domain.getNameservers()).contains(hostAfter.createKey());
     HistoryEntry historyEntry = getOnlyHistoryEntryOfType(hostAfter, HOST_DELETE_FAILURE);
     assertPollMessageFor(
         historyEntry,

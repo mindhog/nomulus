@@ -843,7 +843,9 @@ public class DomainInfoFlowTest extends ResourceFlowTestCase<DomainInfoFlow, Dom
                                         Key.getKind(ContactResource.class),
                                         Key.getKind(HostResource.class)))))
                 .count();
-    assertThat(numReadsWithContactsOrHosts).isEqualTo(1);
+    // Nameserver keys now get persisted twice (because they are stored in nsHostsVKeys), so we
+    // check for two loads instead of 1.
+    assertThat(numReadsWithContactsOrHosts).isEqualTo(2);
   }
 
   @Test

@@ -45,6 +45,7 @@ import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Ignore;
 import com.googlecode.objectify.annotation.IgnoreSave;
 import com.googlecode.objectify.annotation.Index;
+import com.googlecode.objectify.annotation.OnLoad;
 import com.googlecode.objectify.condition.IfNull;
 import google.registry.flows.ResourceFlowUtils;
 import google.registry.model.EppResource;
@@ -135,17 +136,12 @@ public class DomainBase extends EppResource
   /**
    * References to hosts that are the nameservers for the domain.
    *
-   * <p>This is a legacy field: we have to preserve the name of it because it is still persisted in
-   * the datastore, but this information is now tracked by nsHostVKeys. Whenever a domain is
-   * mutated, the contents of this field are migrated to nsHostVKeys and nsHosts is set to null.
+   * <p>This is a legacy field: we have to preserve it because it is still persisted and indexed in
+   * the datastore, but all external references go through nsHostVKeys.
    */
   @Index @ElementCollection @Transient Set<Key<HostResource>> nsHosts;
 
-  //  @ManyToMany(targetEntity = HostResource.class)
-  //  @JoinTable(name = "DomainBase_HostResource")
-  //  @Index
-  //  @ElementCollection
-  @Transient @Ignore Set<VKey<HostResource>> nsHostVKeys;
+  @Ignore @Transient Set<VKey<HostResource>> nsHostVKeys;
 
   /**
    * The union of the contacts visible via {@link #getContacts} and {@link #getRegistrant}.
@@ -254,6 +250,14 @@ public class DomainBase extends EppResource
    */
   DateTime lastTransferTime;
 
+  @OnLoad
+  void load() {
+    nsHostVKeys =
+        nullToEmptyImmutableCopy(nsHosts).stream()
+            .map(hostKey -> VKey.createOfy(HostResource.class, hostKey))
+            .collect(toImmutableSet());
+  }
+
   public ImmutableSet<String> getSubordinateHosts() {
     return nullToEmptyImmutableCopy(subordinateHosts);
   }
@@ -314,13 +318,9 @@ public class DomainBase extends EppResource
   }
 
   public ImmutableSet<VKey<HostResource>> getNameservers() {
-    if (nsHostVKeys != null) {
-      return nullToEmptyImmutableCopy(nsHostVKeys);
-    }
-
-    return nullToEmptyImmutableCopy(nsHosts).stream()
-        .map(hostKey -> VKey.create(HostResource.class, hostKey))
-        .collect(toImmutableSet());
+    // Since nsHostVKeys gets initialized both from setNameservers() and the OnLoad method, this
+    // should always be valid.
+    return nullToEmptyImmutableCopy(nsHostVKeys);
   }
 
   public final String getCurrentSponsorClientId() {
@@ -567,9 +567,8 @@ public class DomainBase extends EppResource
       if (instance.nsHosts != null) {
         instance.nsHostVKeys =
             instance.nsHosts.stream()
-                .map(key -> VKey.create(HostResource.class, key))
+                .map(key -> VKey.createOfy(HostResource.class, key))
                 .collect(toImmutableSet());
-        instance.nsHosts = null;
       }
     }
 
@@ -621,13 +620,25 @@ public class DomainBase extends EppResource
     }
 
     public Builder setNameservers(VKey<HostResource> nameserver) {
-      getInstance().nsHosts = null;
+      if (nameserver.getOfyKey() == null) {
+        getInstance().nsHosts = null;
+      } else {
+        getInstance().nsHosts = ImmutableSet.of(nameserver.getOfyKey());
+      }
       getInstance().nsHostVKeys = ImmutableSet.of(nameserver);
       return thisCastToDerived();
     }
 
     public Builder setNameservers(ImmutableSet<VKey<HostResource>> nameservers) {
-      getInstance().nsHosts = null;
+      if (nameservers != null) {
+        // If we have all of the ofy keys, we can set nsHosts.  Otherwise, leave it null.
+        ImmutableSet<Key<HostResource>> ofyKeys =
+            nameservers.stream().map(key -> key.getOfyKey()).collect(toImmutableSet());
+        getInstance().nsHosts = ofyKeys.stream().anyMatch(key -> key == null) ? null : ofyKeys;
+      } else {
+        getInstance().nsHosts = null;
+      }
+
       getInstance().nsHostVKeys = forceEmptyToNull(nameservers);
       return thisCastToDerived();
     }

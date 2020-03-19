@@ -385,7 +385,7 @@ public class DomainUpdateFlowTest extends ResourceFlowTestCase<DomainUpdateFlow,
     assertTransactionalFlow(true);
     runFlowAssertResponse(loadFile("generic_success_response.xml"));
     domain = reloadResourceByForeignKey();
-    assertThat(domain.getNameservers()).containsExactly(Key.create(addedHost));
+    assertThat(domain.getNameservers()).containsExactly(addedHost.createKey());
     assertThat(domain.getSubordinateHosts()).containsExactly("ns1.example.tld", "ns2.example.tld");
     HostResource existingHost =
         loadByForeignKey(HostResource.class, "ns1.example.tld", clock.nowUtc()).get();
@@ -1199,13 +1199,15 @@ public class DomainUpdateFlowTest extends ResourceFlowTestCase<DomainUpdateFlow,
             .build());
     assertThat(reloadResourceByForeignKey().getNameservers())
         .doesNotContain(
-            Key.create(
-                loadByForeignKey(HostResource.class, "ns2.example.foo", clock.nowUtc()).get()));
+            loadByForeignKey(HostResource.class, "ns2.example.foo", clock.nowUtc())
+                .get()
+                .createKey());
     runFlow();
     assertThat(reloadResourceByForeignKey().getNameservers())
         .contains(
-            Key.create(
-                loadByForeignKey(HostResource.class, "ns2.example.foo", clock.nowUtc()).get()));
+            loadByForeignKey(HostResource.class, "ns2.example.foo", clock.nowUtc())
+                .get()
+                .createKey());
   }
 
   @Test
@@ -1288,8 +1290,9 @@ public class DomainUpdateFlowTest extends ResourceFlowTestCase<DomainUpdateFlow,
             .build());
     assertThat(reloadResourceByForeignKey().getNameservers())
         .contains(
-            Key.create(
-                loadByForeignKey(HostResource.class, "ns1.example.foo", clock.nowUtc()).get()));
+            loadByForeignKey(HostResource.class, "ns1.example.foo", clock.nowUtc())
+                .get()
+                .createKey());
     clock.advanceOneMilli();
     runFlow();
     assertThat(reloadResourceByForeignKey().getNameservers())

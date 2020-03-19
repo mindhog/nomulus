@@ -52,6 +52,11 @@ public class VKey<T> extends ImmutableObject {
     return new VKey(kind, ofyKey, null);
   }
 
+  public static <T> VKey<T> create(
+      Class<? extends T> kind, Object primaryKey, com.googlecode.objectify.Key ofyKey) {
+    return new VKey(kind, ofyKey, primaryKey);
+  }
+
   public Class<? extends T> getKind() {
     return this.kind;
   }

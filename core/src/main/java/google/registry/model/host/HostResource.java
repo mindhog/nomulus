@@ -119,7 +119,7 @@ public class HostResource extends EppResource implements ForeignKeyedEppResource
   }
 
   public VKey<HostResource> createKey() {
-    return VKey.create(HostResource.class, getRepoId());
+    return VKey.createOfy(HostResource.class, Key.create(this));
   }
 
   @Deprecated

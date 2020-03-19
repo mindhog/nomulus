@@ -358,7 +358,7 @@ public class DomainCreateFlow implements TransactionalFlow {
             .setNameservers(
                 (ImmutableSet<VKey<HostResource>>)
                     command.getNameservers().stream()
-                        .map(key -> VKey.create(HostResource.class, key))
+                        .map(key -> VKey.createOfy(HostResource.class, key))
                         .collect(toImmutableSet()))
             .setStatusValues(statuses.build())
             .setContacts(command.getContacts())

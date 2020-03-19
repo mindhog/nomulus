@@ -248,11 +248,11 @@ public final class DomainUpdateFlow implements TransactionalFlow {
             .removeStatusValues(remove.getStatusValues())
             .addNameservers(
                 add.getNameservers().stream()
-                    .map(key -> VKey.create(HostResource.class, key))
+                    .map(key -> VKey.createOfy(HostResource.class, key))
                     .collect(toImmutableSet()))
             .removeNameservers(
                 remove.getNameservers().stream()
-                    .map(key -> VKey.create(HostResource.class, key))
+                    .map(key -> VKey.createOfy(HostResource.class, key))
                     .collect(toImmutableSet()))
             .addContacts(add.getContacts())
             .removeContacts(remove.getContacts())

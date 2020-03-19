@@ -129,7 +129,6 @@ public abstract class EppResource extends BackupGroupRoot implements Buildable {
    * @see google.registry.model.translators.CommitLogRevisionsTranslatorFactory
    */
   @Transient
-  //  @ManyToMany(cascade = )
   ImmutableSortedMap<DateTime, Key<CommitLogManifest>> revisions = ImmutableSortedMap.of();
 
   public final String getRepoId() {
