@@ -14,6 +14,8 @@
 
 package google.registry.persistence;
 
+import static com.google.common.base.Preconditions.checkState;
+
 import google.registry.model.ImmutableObject;
 
 /**
@@ -25,12 +27,12 @@ import google.registry.model.ImmutableObject;
 public class VKey<T> extends ImmutableObject {
 
   // The primary key for the referenced entity.
-  private Object primaryKey;
+  private final Object primaryKey;
 
   // The objectify key for the referenced entity.
-  private com.googlecode.objectify.Key<T> ofyKey;
+  private final com.googlecode.objectify.Key<T> ofyKey;
 
-  private Class<? extends T> kind;
+  private final Class<? extends T> kind;
 
   private VKey(Class<? extends T> kind, com.googlecode.objectify.Key<T> ofyKey, Object primaryKey) {
     this.kind = kind;
@@ -63,11 +65,13 @@ public class VKey<T> extends ImmutableObject {
 
   /** Returns the SQL primary key. */
   public Object getSqlKey() {
+    checkState(primaryKey != null, "Attempting obtain a null SQL key.");
     return this.primaryKey;
   }
 
   /** Returns the objectify key. */
   public com.googlecode.objectify.Key<T> getOfyKey() {
+    checkState(primaryKey != null, "Attempting obtain a null Objectify key.");
     return this.ofyKey;
   }
 }
