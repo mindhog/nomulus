@@ -620,21 +620,22 @@ public class DomainBase extends EppResource
     }
 
     public Builder setNameservers(VKey<HostResource> nameserver) {
-      if (nameserver.getOfyKey() == null) {
-        getInstance().nsHosts = null;
+      Optional<Key<HostResource>> nsKey = nameserver.maybeGetOfyKey();
+      if (nsKey.isPresent()) {
+        getInstance().nsHosts = ImmutableSet.of(nsKey.get());
       } else {
-        getInstance().nsHosts = ImmutableSet.of(nameserver.getOfyKey());
+        getInstance().nsHosts = null;
       }
       getInstance().nsHostVKeys = ImmutableSet.of(nameserver);
       return thisCastToDerived();
     }
 
     public Builder setNameservers(ImmutableSet<VKey<HostResource>> nameservers) {
-      if (nameservers != null) {
-        // If we have all of the ofy keys, we can set nsHosts.  Otherwise, leave it null.
-        ImmutableSet<Key<HostResource>> ofyKeys =
+      // If we have all of the ofy keys, we can set nsHosts.  Otherwise, make it null.
+      if (nameservers != null
+          && nameservers.stream().allMatch(key -> key.maybeGetOfyKey().isPresent())) {
+        getInstance().nsHosts =
             nameservers.stream().map(key -> key.getOfyKey()).collect(toImmutableSet());
-        getInstance().nsHosts = ofyKeys.stream().anyMatch(key -> key == null) ? null : ofyKeys;
       } else {
         getInstance().nsHosts = null;
       }

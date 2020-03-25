@@ -17,6 +17,7 @@ package google.registry.persistence;
 import static com.google.common.base.Preconditions.checkState;
 
 import google.registry.model.ImmutableObject;
+import java.util.Optional;
 
 /**
  * VKey is an abstraction that encapsulates the key concept.
@@ -69,9 +70,19 @@ public class VKey<T> extends ImmutableObject {
     return this.primaryKey;
   }
 
+  /** Returns the SQL primary key if it exists. */
+  public Optional<Object> maybeGetSqlKey() {
+    return Optional.of(this.primaryKey);
+  }
+
   /** Returns the objectify key. */
   public com.googlecode.objectify.Key<T> getOfyKey() {
-    checkState(primaryKey != null, "Attempting obtain a null Objectify key.");
+    checkState(ofyKey != null, "Attempting obtain a null Objectify key.");
     return this.ofyKey;
+  }
+
+  /** Returns the objectify key if it exists. */
+  public Optional<com.googlecode.objectify.Key<T>> maybeGetOfyKey() {
+    return Optional.of(this.ofyKey);
   }
 }
