@@ -12,10 +12,9 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 
-create table "Domain_HostResource" (
+create table "Domain_nsHostVKeys" (
    domain_repo_id text not null,
-    hosts_repo_id text not null,
-    primary key (domain_repo_id, hosts_repo_id)
+    hosts_repo_id text
 );
 
 create table "HostResource" (
@@ -31,6 +30,7 @@ create table "HostResource" (
     last_superordinate_change timestamptz,
     last_transfer_time timestamptz,
     superordinate_domain bytea,
+    hosts_repo_id text,
     primary key (repo_id)
 );
 

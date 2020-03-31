@@ -67,10 +67,9 @@
         primary key (repo_id)
     );
 
-    create table "Domain_HostResource" (
+    create table "Domain_nsHostVKeys" (
        domain_repo_id text not null,
-        hosts_repo_id text not null,
-        primary key (domain_repo_id, hosts_repo_id)
+        hosts_repo_id text
     );
 
     create table "GracePeriod" (
@@ -96,6 +95,7 @@
         last_superordinate_change timestamptz,
         last_transfer_time timestamptz,
         superordinate_domain bytea,
+        hosts_repo_id text,
         primary key (repo_id)
     );
 
@@ -233,9 +233,6 @@ create index IDX8ffrqm27qtj20jac056j7yq07 on "Domain" (current_sponsor_client_id
 create index IDX5mnf0wn20tno4b9do88j61klr on "Domain" (deletion_time);
 create index IDX1rcgkdd777bpvj0r94sltwd5y on "Domain" (fully_qualified_domain_name);
 create index IDXrwl38wwkli1j7gkvtywi9jokq on "Domain" (tld);
-
-    alter table if exists "Domain_HostResource" 
-       add constraint UK_m6ln9gnn74fbahsplrwbahrk9 unique (hosts_repo_id);
 create index premiumlist_name_idx on "PremiumList" (name);
 create index registrar_name_idx on "Registrar" (registrar_name);
 create index registrar_iana_identifier_idx on "Registrar" (iana_identifier);
@@ -252,14 +249,14 @@ create index reservedlist_name_idx on "ReservedList" (name);
        foreign key (revision_id) 
        references "ClaimsList";
 
-    alter table if exists "Domain_HostResource" 
-       add constraint FK9d55iufjp85sn2v2nbtpadq66 
-       foreign key (hosts_repo_id) 
-       references "HostResource";
-
-    alter table if exists "Domain_HostResource" 
-       add constraint FKmh38qg6k98h4ro864q7nqarg2 
+    alter table if exists "Domain_nsHostVKeys" 
+       add constraint FKfmi7bdink53swivs390m2btxg 
        foreign key (domain_repo_id) 
+       references "Domain";
+
+    alter table if exists "HostResource" 
+       add constraint FKauphu828ii99unf72netxx2cs 
+       foreign key (hosts_repo_id) 
        references "Domain";
 
     alter table if exists "HostResource_inetAddresses" 

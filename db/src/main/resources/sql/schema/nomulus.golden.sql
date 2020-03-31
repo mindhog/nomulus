@@ -117,12 +117,12 @@ CREATE TABLE public."Domain" (
 
 
 --
--- Name: Domain_HostResource; Type: TABLE; Schema: public; Owner: -
+-- Name: Domain_nsHostVKeys; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public."Domain_HostResource" (
+CREATE TABLE public."Domain_nsHostVKeys" (
     domain_repo_id text NOT NULL,
-    hosts_repo_id text NOT NULL
+    hosts_repo_id text
 );
 
 
@@ -142,7 +142,8 @@ CREATE TABLE public."HostResource" (
     fully_qualified_host_name text,
     last_superordinate_change timestamp with time zone,
     last_transfer_time timestamp with time zone,
-    superordinate_domain bytea
+    superordinate_domain bytea,
+    hosts_repo_id text
 );
 
 
@@ -423,14 +424,6 @@ ALTER TABLE ONLY public."Cursor"
 
 
 --
--- Name: Domain_HostResource Domain_HostResource_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public."Domain_HostResource"
-    ADD CONSTRAINT "Domain_HostResource_pkey" PRIMARY KEY (domain_repo_id, hosts_repo_id);
-
-
---
 -- Name: Domain Domain_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -516,14 +509,6 @@ ALTER TABLE ONLY public."ReservedList"
 
 ALTER TABLE ONLY public."RegistryLock"
     ADD CONSTRAINT idx_registry_lock_repo_id_revision_id UNIQUE (repo_id, revision_id);
-
-
---
--- Name: Domain_HostResource uk_m6ln9gnn74fbahsplrwbahrk9; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public."Domain_HostResource"
-    ADD CONSTRAINT uk_m6ln9gnn74fbahsplrwbahrk9 UNIQUE (hosts_repo_id);
 
 
 --
@@ -635,27 +620,11 @@ ALTER TABLE ONLY public."HostResource_inetAddresses"
 
 
 --
--- Name: Domain_HostResource fk9d55iufjp85sn2v2nbtpadq66; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public."Domain_HostResource"
-    ADD CONSTRAINT fk9d55iufjp85sn2v2nbtpadq66 FOREIGN KEY (hosts_repo_id) REFERENCES public."HostResource"(repo_id);
-
-
---
 -- Name: ReservedEntry fkgq03rk0bt1hb915dnyvd3vnfc; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public."ReservedEntry"
     ADD CONSTRAINT fkgq03rk0bt1hb915dnyvd3vnfc FOREIGN KEY (revision_id) REFERENCES public."ReservedList"(revision_id);
-
-
---
--- Name: Domain_HostResource fkmh38qg6k98h4ro864q7nqarg2; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public."Domain_HostResource"
-    ADD CONSTRAINT fkmh38qg6k98h4ro864q7nqarg2 FOREIGN KEY (domain_repo_id) REFERENCES public."Domain"(repo_id);
 
 
 --

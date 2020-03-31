@@ -76,8 +76,10 @@ import javax.annotation.Nullable;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.Transient;
 import org.joda.time.DateTime;
@@ -143,9 +145,17 @@ public class DomainBase extends EppResource
   @Index @ElementCollection @Transient Set<Key<HostResource>> nsHosts;
 
   /** Collection to force table generation in the schema. */
-  @ManyToMany @ElementCollection Set<HostResource> hosts;
+  @Ignore
+  @JoinColumn(name = "hosts_repo_id")
+  @ManyToMany
+  @ElementCollection
+  Set<HostResource> hosts;
 
-  @Ignore @Transient Set<VKey<HostResource>> nsHostVKeys;
+  @Column(name = "hosts_repo_id")
+  @Convert(converter = HostResource.VKeyHostResourceConverter.class)
+  @Ignore
+  @ElementCollection
+  Set<VKey<HostResource>> nsHostVKeys;
 
   /**
    * The union of the contacts visible via {@link #getContacts} and {@link #getRegistrant}.
