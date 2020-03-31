@@ -117,6 +117,46 @@ CREATE TABLE public."Domain" (
 
 
 --
+-- Name: Domain_HostResource; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public."Domain_HostResource" (
+    domain_repo_id text NOT NULL,
+    hosts_repo_id text NOT NULL
+);
+
+
+--
+-- Name: HostResource; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public."HostResource" (
+    repo_id text NOT NULL,
+    creation_client_id text,
+    creation_time timestamp with time zone,
+    current_sponsor_client_id text,
+    deletion_time timestamp with time zone,
+    last_epp_update_client_id text,
+    last_epp_update_time timestamp with time zone,
+    statuses text[],
+    fully_qualified_host_name text,
+    last_superordinate_change timestamp with time zone,
+    last_transfer_time timestamp with time zone,
+    superordinate_domain bytea
+);
+
+
+--
+-- Name: HostResource_inetAddresses; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public."HostResource_inetAddresses" (
+    host_resource_repo_id text NOT NULL,
+    inet_addresses bytea
+);
+
+
+--
 -- Name: Lock; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -383,11 +423,27 @@ ALTER TABLE ONLY public."Cursor"
 
 
 --
+-- Name: Domain_HostResource Domain_HostResource_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."Domain_HostResource"
+    ADD CONSTRAINT "Domain_HostResource_pkey" PRIMARY KEY (domain_repo_id, hosts_repo_id);
+
+
+--
 -- Name: Domain Domain_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public."Domain"
     ADD CONSTRAINT "Domain_pkey" PRIMARY KEY (repo_id);
+
+
+--
+-- Name: HostResource HostResource_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."HostResource"
+    ADD CONSTRAINT "HostResource_pkey" PRIMARY KEY (repo_id);
 
 
 --
@@ -460,6 +516,14 @@ ALTER TABLE ONLY public."ReservedList"
 
 ALTER TABLE ONLY public."RegistryLock"
     ADD CONSTRAINT idx_registry_lock_repo_id_revision_id UNIQUE (repo_id, revision_id);
+
+
+--
+-- Name: Domain_HostResource uk_m6ln9gnn74fbahsplrwbahrk9; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."Domain_HostResource"
+    ADD CONSTRAINT uk_m6ln9gnn74fbahsplrwbahrk9 UNIQUE (hosts_repo_id);
 
 
 --
@@ -563,11 +627,35 @@ ALTER TABLE ONLY public."ClaimsEntry"
 
 
 --
+-- Name: HostResource_inetAddresses fk6unwhfkcu3oq6q347fxvpagv; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."HostResource_inetAddresses"
+    ADD CONSTRAINT fk6unwhfkcu3oq6q347fxvpagv FOREIGN KEY (host_resource_repo_id) REFERENCES public."HostResource"(repo_id);
+
+
+--
+-- Name: Domain_HostResource fk9d55iufjp85sn2v2nbtpadq66; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."Domain_HostResource"
+    ADD CONSTRAINT fk9d55iufjp85sn2v2nbtpadq66 FOREIGN KEY (hosts_repo_id) REFERENCES public."HostResource"(repo_id);
+
+
+--
 -- Name: ReservedEntry fkgq03rk0bt1hb915dnyvd3vnfc; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public."ReservedEntry"
     ADD CONSTRAINT fkgq03rk0bt1hb915dnyvd3vnfc FOREIGN KEY (revision_id) REFERENCES public."ReservedList"(revision_id);
+
+
+--
+-- Name: Domain_HostResource fkmh38qg6k98h4ro864q7nqarg2; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."Domain_HostResource"
+    ADD CONSTRAINT fkmh38qg6k98h4ro864q7nqarg2 FOREIGN KEY (domain_repo_id) REFERENCES public."Domain"(repo_id);
 
 
 --

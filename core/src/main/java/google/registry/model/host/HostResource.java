@@ -38,18 +38,20 @@ import java.net.InetAddress;
 import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nullable;
+import javax.persistence.ElementCollection;
 import org.joda.time.DateTime;
 
 /**
  * A persistable Host resource including mutable and non-mutable fields.
  *
- * <p>A host's {@link TransferData} is stored on the superordinate domain.  Non-subordinate hosts
+ * <p>A host's {@link TransferData} is stored on the superordinate domain. Non-subordinate hosts
  * don't carry a full set of TransferData; all they have is lastTransferTime.
  *
  * @see <a href="https://tools.ietf.org/html/rfc5732">RFC 5732</a>
  */
 @ReportedOn
 @Entity
+@javax.persistence.Entity
 @ExternalMessagingName("host")
 public class HostResource extends EppResource implements ForeignKeyedEppResource {
 
@@ -64,8 +66,7 @@ public class HostResource extends EppResource implements ForeignKeyedEppResource
   String fullyQualifiedHostName;
 
   /** IP Addresses for this host. Can be null if this is an external host. */
-  @Index
-  Set<InetAddress> inetAddresses;
+  @Index @ElementCollection Set<InetAddress> inetAddresses;
 
   /** The superordinate domain of this host, or null if this is an external host. */
   @Index

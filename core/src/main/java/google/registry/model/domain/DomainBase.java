@@ -78,6 +78,7 @@ import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
+import javax.persistence.ManyToMany;
 import javax.persistence.Transient;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
@@ -140,6 +141,9 @@ public class DomainBase extends EppResource
    * the datastore, but all external references go through nsHostVKeys.
    */
   @Index @ElementCollection @Transient Set<Key<HostResource>> nsHosts;
+
+  /** Collection to force table generation in the schema. */
+  @ManyToMany @ElementCollection Set<HostResource> hosts;
 
   @Ignore @Transient Set<VKey<HostResource>> nsHostVKeys;
 
