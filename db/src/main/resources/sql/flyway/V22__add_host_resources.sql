@@ -39,17 +39,14 @@ create table "HostResource_inetAddresses" (
     inet_addresses bytea
 );
 
-alter table if exists "Domain_HostResource"
-   add constraint UK_m6ln9gnn74fbahsplrwbahrk9 unique (hosts_repo_id);
-
-alter table if exists "Domain_HostResource"
-   add constraint FK9d55iufjp85sn2v2nbtpadq66
-   foreign key (hosts_repo_id)
-   references "HostResource";
-
-alter table if exists "Domain_HostResource"
-   add constraint FKmh38qg6k98h4ro864q7nqarg2
+alter table if exists "Domain_nsHostVKeys"
+   add constraint FKfmi7bdink53swivs390m2btxg
    foreign key (domain_repo_id)
+   references "Domain";
+
+alter table if exists "HostResource"
+   add constraint FKauphu828ii99unf72netxx2cs
+   foreign key (hosts_repo_id)
    references "Domain";
 
 alter table if exists "HostResource_inetAddresses"

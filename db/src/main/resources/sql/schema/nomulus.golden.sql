@@ -620,6 +620,22 @@ ALTER TABLE ONLY public."HostResource_inetAddresses"
 
 
 --
+-- Name: HostResource fkauphu828ii99unf72netxx2cs; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."HostResource"
+    ADD CONSTRAINT fkauphu828ii99unf72netxx2cs FOREIGN KEY (hosts_repo_id) REFERENCES public."Domain"(repo_id);
+
+
+--
+-- Name: Domain_nsHostVKeys fkfmi7bdink53swivs390m2btxg; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."Domain_nsHostVKeys"
+    ADD CONSTRAINT fkfmi7bdink53swivs390m2btxg FOREIGN KEY (domain_repo_id) REFERENCES public."Domain"(repo_id);
+
+
+--
 -- Name: ReservedEntry fkgq03rk0bt1hb915dnyvd3vnfc; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
