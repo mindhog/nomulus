@@ -67,6 +67,11 @@
         primary key (repo_id)
     );
 
+    create table "Domain_HostResource" (
+       domain_repo_id text not null,
+        ns_host_v_keys text
+    );
+
     create table "GracePeriod" (
        id  bigserial not null,
         billing_event_one_time bytea,
@@ -75,6 +80,22 @@
         expiration_time timestamptz,
         type int4,
         primary key (id)
+    );
+
+    create table "HostResource" (
+       repo_id text not null,
+        creation_client_id text,
+        creation_time timestamptz,
+        current_sponsor_client_id text,
+        deletion_time timestamptz,
+        last_epp_update_client_id text,
+        last_epp_update_time timestamptz,
+        statuses text[],
+        fully_qualified_host_name text,
+        last_superordinate_change timestamptz,
+        last_transfer_time timestamptz,
+        superordinate_domain bytea,
+        primary key (repo_id)
     );
 
     create table "Lock" (
@@ -221,6 +242,11 @@ create index reservedlist_name_idx on "ReservedList" (name);
        add constraint FK6sc6at5hedffc0nhdcab6ivuq 
        foreign key (revision_id) 
        references "ClaimsList";
+
+    alter table if exists "Domain_HostResource" 
+       add constraint FKmh38qg6k98h4ro864q7nqarg2 
+       foreign key (domain_repo_id) 
+       references "Domain";
 
     alter table if exists "PremiumEntry" 
        add constraint FKo0gw90lpo1tuee56l0nb6y6g5 
