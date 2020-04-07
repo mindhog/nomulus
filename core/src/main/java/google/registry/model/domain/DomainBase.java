@@ -23,6 +23,7 @@ import static com.google.common.collect.Sets.intersection;
 import static com.google.common.collect.Sets.union;
 import static google.registry.model.EppResourceUtils.projectResourceOntoBuilderAtTime;
 import static google.registry.model.EppResourceUtils.setAutomaticTransferSuccessProperties;
+import static google.registry.model.host.HostResource.HostVKeySetConverter;
 import static google.registry.model.ofy.ObjectifyService.ofy;
 import static google.registry.util.CollectionUtils.forceEmptyToNull;
 import static google.registry.util.CollectionUtils.nullToEmpty;
@@ -76,6 +77,7 @@ import javax.annotation.Nullable;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Transient;
@@ -141,7 +143,9 @@ public class DomainBase extends EppResource
    */
   @Index @ElementCollection @Transient Set<Key<HostResource>> nsHosts;
 
-  @Ignore @Transient Set<VKey<HostResource>> nsHostVKeys;
+  @Convert(converter = HostVKeySetConverter.class)
+  @Ignore
+  Set<VKey<HostResource>> nsHostVKeys;
 
   /**
    * The union of the contacts visible via {@link #getContacts} and {@link #getRegistrant}.

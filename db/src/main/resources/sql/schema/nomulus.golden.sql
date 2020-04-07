@@ -112,7 +112,28 @@ CREATE TABLE public."Domain" (
     registration_expiration_time timestamp with time zone,
     smd_id text,
     subordinate_hosts text[],
-    tld text
+    tld text,
+    ns_host_v_keys text[]
+);
+
+
+--
+-- Name: HostResource; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public."HostResource" (
+    repo_id text NOT NULL,
+    creation_client_id text,
+    creation_time timestamp with time zone,
+    current_sponsor_client_id text,
+    deletion_time timestamp with time zone,
+    last_epp_update_client_id text,
+    last_epp_update_time timestamp with time zone,
+    statuses text[],
+    fully_qualified_host_name text,
+    last_superordinate_change timestamp with time zone,
+    last_transfer_time timestamp with time zone,
+    superordinate_domain bytea
 );
 
 
@@ -388,6 +409,14 @@ ALTER TABLE ONLY public."Cursor"
 
 ALTER TABLE ONLY public."Domain"
     ADD CONSTRAINT "Domain_pkey" PRIMARY KEY (repo_id);
+
+
+--
+-- Name: HostResource HostResource_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."HostResource"
+    ADD CONSTRAINT "HostResource_pkey" PRIMARY KEY (repo_id);
 
 
 --

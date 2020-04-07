@@ -60,6 +60,7 @@
         launch_notice_expiration_time timestamptz,
         launch_notice_tcn_id text,
         launch_notice_validator_id text,
+        ns_host_v_keys text[],
         registration_expiration_time timestamptz,
         smd_id text,
         subordinate_hosts text[],

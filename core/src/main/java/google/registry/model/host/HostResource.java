@@ -34,6 +34,7 @@ import google.registry.model.annotations.ReportedOn;
 import google.registry.model.domain.DomainBase;
 import google.registry.model.transfer.TransferData;
 import google.registry.persistence.VKey;
+import google.registry.persistence.converter.VKeySetConverter;
 import java.net.InetAddress;
 import java.util.Optional;
 import java.util.Set;
@@ -211,6 +212,16 @@ public class HostResource extends EppResource implements ForeignKeyedEppResource
     public Builder setLastTransferTime(DateTime lastTransferTime) {
       getInstance().lastTransferTime = lastTransferTime;
       return this;
+    }
+  }
+
+  public static class HostVKeySetConverter extends VKeySetConverter<HostResource> {
+
+    public HostVKeySetConverter() {}
+
+    @Override
+    protected Class getElementClass() {
+      return HostResource.class;
     }
   }
 }
