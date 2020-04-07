@@ -38,6 +38,7 @@ import java.net.InetAddress;
 import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nullable;
+import javax.persistence.Transient;
 import org.joda.time.DateTime;
 
 /**
@@ -50,6 +51,7 @@ import org.joda.time.DateTime;
  */
 @ReportedOn
 @Entity
+@javax.persistence.Entity
 @ExternalMessagingName("host")
 public class HostResource extends EppResource implements ForeignKeyedEppResource {
 
@@ -65,6 +67,7 @@ public class HostResource extends EppResource implements ForeignKeyedEppResource
 
   /** IP Addresses for this host. Can be null if this is an external host. */
   @Index
+  @Transient
   Set<InetAddress> inetAddresses;
 
   /** The superordinate domain of this host, or null if this is an external host. */

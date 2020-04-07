@@ -27,6 +27,8 @@ import google.registry.model.domain.launch.LaunchNotice;
 import google.registry.model.domain.secdns.DelegationSignerData;
 import google.registry.model.eppcommon.AuthInfo.PasswordAuth;
 import google.registry.model.eppcommon.StatusValue;
+import google.registry.model.host.HostResource;
+import google.registry.persistence.VKey;
 import javax.persistence.EntityManager;
 import org.junit.Before;
 import org.junit.Test;
@@ -110,5 +112,58 @@ public class DomainBaseSqlTest extends EntityTestCase {
               // Note that the equality comparison forces a lazy load of all fields.
               assertThat(result).isEqualTo(org);
             });
+  }
+
+  @Test
+  public void testPersistenceTime() {
+    ImmutableSet.Builder<VKey<HostResource>> hostsBuilder =
+        new ImmutableSet.Builder<VKey<HostResource>>();
+    for (int i = 0; i < 4; ++i) {
+      HostResource host =
+          new HostResource.Builder()
+              .setRepoId("host" + i)
+              .setFullyQualifiedHostName("ns" + i + ".example.com")
+              .build();
+
+      jpaTm().transact(() -> jpaTm().getEntityManager().persist(host));
+      hostsBuilder.add(VKey.createSql(HostResource.class, "host" + i));
+    }
+
+    ImmutableSet<VKey<HostResource>> hosts = hostsBuilder.build();
+
+    long startTime = System.currentTimeMillis();
+    for (int i = 0; i < 10000; ++i) {
+      domain =
+          new DomainBase.Builder()
+              .setFullyQualifiedDomainName("example" + i + ".com")
+              .setRepoId(i + "-COM")
+              .setCreationClientId("a registrar")
+              .setLastEppUpdateTime(fakeClock.nowUtc())
+              .setLastEppUpdateClientId("AnotherRegistrar")
+              .setLastTransferTime(fakeClock.nowUtc())
+              .setNameservers(hosts)
+              .setStatusValues(
+                  ImmutableSet.of(
+                      StatusValue.CLIENT_DELETE_PROHIBITED,
+                      StatusValue.SERVER_DELETE_PROHIBITED,
+                      StatusValue.SERVER_TRANSFER_PROHIBITED,
+                      StatusValue.SERVER_UPDATE_PROHIBITED,
+                      StatusValue.SERVER_RENEW_PROHIBITED,
+                      StatusValue.SERVER_HOLD))
+              .setRegistrant(contactKey)
+              .setContacts(ImmutableSet.of(DesignatedContact.create(Type.ADMIN, contact2Key)))
+              .setSubordinateHosts(ImmutableSet.of("ns1.example.com"))
+              .setPersistedCurrentSponsorClientId("losing")
+              .setRegistrationExpirationTime(fakeClock.nowUtc().plusYears(1))
+              .setAuthInfo(DomainAuthInfo.create(PasswordAuth.create("password")))
+              .setDsData(
+                  ImmutableSet.of(DelegationSignerData.create(1, 2, 3, new byte[] {0, 1, 2})))
+              .setLaunchNotice(
+                  LaunchNotice.create("tcnid", "validatorId", START_OF_TIME, START_OF_TIME))
+              .setSmdId("smdid")
+              .build();
+      jpaTm().transact(() -> jpaTm().getEntityManager().persist(domain));
+    }
+    System.err.println("elapsed time: " + (System.currentTimeMillis() - startTime));
   }
 }

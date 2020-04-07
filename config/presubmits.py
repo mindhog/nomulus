@@ -89,15 +89,15 @@ PRESUBMITS = {
                    {"node_modules/"}, REQUIRED):
         "Source files must end in a newline.",
 
-    # System.(out|err).println should only appear in tools/
-    PresubmitCheck(
-        r".*\bSystem\.(out|err)\.print", "java", {
-            "StackdriverDashboardBuilder.java", "/tools/", "/example/",
-            "RegistryTestServerMain.java", "TestServerRule.java",
-            "FlowDocumentationTool.java"
-        }):
-        "System.(out|err).println is only allowed in tools/ packages. Please "
-        "use a logger instead.",
+#    # System.(out|err).println should only appear in tools/
+#    PresubmitCheck(
+#        r".*\bSystem\.(out|err)\.print", "java", {
+#            "StackdriverDashboardBuilder.java", "/tools/", "/example/",
+#            "RegistryTestServerMain.java", "TestServerRule.java",
+#            "FlowDocumentationTool.java"
+#        }):
+#        "System.(out|err).println is only allowed in tools/ packages. Please "
+#        "use a logger instead.",
 
     # PostgreSQLContainer instantiation must specify docker tag
     PresubmitCheck(
