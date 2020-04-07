@@ -162,8 +162,20 @@ public class DomainBaseSqlTest extends EntityTestCase {
                   LaunchNotice.create("tcnid", "validatorId", START_OF_TIME, START_OF_TIME))
               .setSmdId("smdid")
               .build();
-      jpaTm().transact(() -> jpaTm().getEntityManager().persist(domain));
+      jpaTm().transact(() -> jpaTm().saveNew(domain));
     }
-    System.err.println("elapsed time: " + (System.currentTimeMillis() - startTime));
+    long endStorageTime = System.currentTimeMillis();
+    System.err.println("storage time: " + (endStorageTime - startTime));
+
+    for (int i = 0; i < 10000; ++i) {
+      String name = i + "-COM";
+      jpaTm().transact(
+          () -> {
+            DomainBase domain = jpaTm().load(VKey.createSql(DomainBase.class, name)).get();
+            assertThat(domain.getNameservers()).isEqualTo(hosts);
+          });
+    }
+
+    System.err.println("retrieval time: " + (System.currentTimeMillis() - endStorageTime));
   }
 }
