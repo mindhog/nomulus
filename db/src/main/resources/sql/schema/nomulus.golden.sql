@@ -122,7 +122,7 @@ CREATE TABLE public."Domain" (
 
 CREATE TABLE public."Domain_HostResource" (
     domain_repo_id text NOT NULL,
-    ns_host_v_keys text
+    ns_host_v_keys text NOT NULL
 );
 
 
@@ -420,6 +420,14 @@ ALTER TABLE ONLY public."ClaimsList"
 
 ALTER TABLE ONLY public."Cursor"
     ADD CONSTRAINT "Cursor_pkey" PRIMARY KEY (scope, type);
+
+
+--
+-- Name: Domain_HostResource Domain_HostResource_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."Domain_HostResource"
+    ADD CONSTRAINT "Domain_HostResource_pkey" PRIMARY KEY (domain_repo_id, ns_host_v_keys);
 
 
 --

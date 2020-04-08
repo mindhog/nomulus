@@ -17,6 +17,9 @@ create table "Domain_HostResource" (
     ns_host_v_keys text
 );
 
+ALTER TABLE ONLY public."Domain_HostResource"
+   ADD CONSTRAINT "Domain_HostResource_pkey" PRIMARY KEY (domain_repo_id, ns_host_v_keys);
+
 create table "HostResource" (
    repo_id text not null,
     creation_client_id text,
