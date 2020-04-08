@@ -819,12 +819,10 @@ public class DomainBaseTest extends EntityTestCase {
         new DomainBase.Builder(domain)
             .setNameservers((ImmutableSet<VKey<HostResource>>) null)
             .build();
-    assertThat(dom.nsHostVKeys).isNull();
     assertThat(dom.nsHosts).isNull();
 
     // Empty set of values gets translated to null.
     dom = new DomainBase.Builder(domain).setNameservers(ImmutableSet.of()).build();
-    assertThat(dom.nsHostVKeys).isNull();
     assertThat(dom.nsHosts).isNull();
   }
 }

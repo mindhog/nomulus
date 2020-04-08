@@ -44,7 +44,7 @@ import org.joda.time.DateTime;
 /**
  * A persistable Host resource including mutable and non-mutable fields.
  *
- * <p>A host's {@link TransferData} is stored on the superordinate domain.  Non-subordinate hosts
+ * <p>A host's {@link TransferData} is stored on the superordinate domain. Non-subordinate hosts
  * don't carry a full set of TransferData; all they have is lastTransferTime.
  *
  * @see <a href="https://tools.ietf.org/html/rfc5732">RFC 5732</a>
@@ -66,9 +66,7 @@ public class HostResource extends EppResource implements ForeignKeyedEppResource
   String fullyQualifiedHostName;
 
   /** IP Addresses for this host. Can be null if this is an external host. */
-  @Index
-  @Transient
-  Set<InetAddress> inetAddresses;
+  @Index @Transient Set<InetAddress> inetAddresses;
 
   /** The superordinate domain of this host, or null if this is an external host. */
   @Index
@@ -173,6 +171,10 @@ public class HostResource extends EppResource implements ForeignKeyedEppResource
 
     private Builder(HostResource instance) {
       super(instance);
+    }
+
+    public static HostResource fromKey(VKey<HostResource> key) {
+      return new Builder().setRepoId((String) key.getSqlKey()).getInstance();
     }
 
     public Builder setFullyQualifiedHostName(String fullyQualifiedHostName) {

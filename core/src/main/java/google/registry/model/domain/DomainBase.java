@@ -24,6 +24,7 @@ import static com.google.common.collect.Sets.union;
 import static google.registry.model.EppResourceUtils.projectResourceOntoBuilderAtTime;
 import static google.registry.model.EppResourceUtils.setAutomaticTransferSuccessProperties;
 import static google.registry.model.ofy.ObjectifyService.ofy;
+import static google.registry.persistence.transaction.TransactionManagerFactory.jpaTm;
 import static google.registry.util.CollectionUtils.forceEmptyToNull;
 import static google.registry.util.CollectionUtils.nullToEmpty;
 import static google.registry.util.CollectionUtils.nullToEmptyImmutableCopy;
@@ -42,10 +43,8 @@ import com.google.common.collect.Ordering;
 import com.google.common.collect.Streams;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.annotation.Entity;
-import com.googlecode.objectify.annotation.Ignore;
 import com.googlecode.objectify.annotation.IgnoreSave;
 import com.googlecode.objectify.annotation.Index;
-import com.googlecode.objectify.annotation.OnLoad;
 import com.googlecode.objectify.condition.IfNull;
 import google.registry.flows.ResourceFlowUtils;
 import google.registry.model.EppResource;
@@ -78,6 +77,7 @@ import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
+import javax.persistence.ManyToMany;
 import javax.persistence.Transient;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
@@ -137,11 +137,11 @@ public class DomainBase extends EppResource
    * References to hosts that are the nameservers for the domain.
    *
    * <p>This is a legacy field: we have to preserve it because it is still persisted and indexed in
-   * the datastore, but all external references go through nsHostVKeys.
+   * the datastore, but all external references go through nsHostObjs.
    */
   @Index @ElementCollection @Transient Set<Key<HostResource>> nsHosts;
 
-  @Ignore @Transient Set<VKey<HostResource>> nsHostVKeys;
+  @ManyToMany Set<HostResource> nsHostObjs;
 
   /**
    * The union of the contacts visible via {@link #getContacts} and {@link #getRegistrant}.
@@ -250,14 +250,6 @@ public class DomainBase extends EppResource
    */
   DateTime lastTransferTime;
 
-  @OnLoad
-  void load() {
-    nsHostVKeys =
-        nullToEmptyImmutableCopy(nsHosts).stream()
-            .map(hostKey -> VKey.createOfy(HostResource.class, hostKey))
-            .collect(toImmutableSet());
-  }
-
   public ImmutableSet<String> getSubordinateHosts() {
     return nullToEmptyImmutableCopy(subordinateHosts);
   }
@@ -318,9 +310,9 @@ public class DomainBase extends EppResource
   }
 
   public ImmutableSet<VKey<HostResource>> getNameservers() {
-    // Since nsHostVKeys gets initialized both from setNameservers() and the OnLoad method, this
-    // should always be valid.
-    return nullToEmptyImmutableCopy(nsHostVKeys);
+    return nullToEmptyImmutableCopy(nsHostObjs).stream()
+        .map(host -> VKey.createSql(HostResource.class, host.getRepoId()))
+        .collect(toImmutableSet());
   }
 
   public final String getCurrentSponsorClientId() {
@@ -562,14 +554,6 @@ public class DomainBase extends EppResource
 
     Builder(DomainBase instance) {
       super(instance);
-
-      // Convert nsHosts to nsHostVKeys.
-      if (instance.nsHosts != null) {
-        instance.nsHostVKeys =
-            instance.nsHosts.stream()
-                .map(key -> VKey.createOfy(HostResource.class, key))
-                .collect(toImmutableSet());
-      }
     }
 
     @Override
@@ -620,27 +604,15 @@ public class DomainBase extends EppResource
     }
 
     public Builder setNameservers(VKey<HostResource> nameserver) {
-      Optional<Key<HostResource>> nsKey = nameserver.maybeGetOfyKey();
-      if (nsKey.isPresent()) {
-        getInstance().nsHosts = ImmutableSet.of(nsKey.get());
-      } else {
-        getInstance().nsHosts = null;
-      }
-      getInstance().nsHostVKeys = ImmutableSet.of(nameserver);
+      getInstance().nsHostObjs = ImmutableSet.of(HostResource.Builder.fromKey(nameserver));
       return thisCastToDerived();
     }
 
     public Builder setNameservers(ImmutableSet<VKey<HostResource>> nameservers) {
-      // If we have all of the ofy keys, we can set nsHosts.  Otherwise, make it null.
-      if (nameservers != null
-          && nameservers.stream().allMatch(key -> key.maybeGetOfyKey().isPresent())) {
-        getInstance().nsHosts =
-            nameservers.stream().map(key -> key.getOfyKey()).collect(toImmutableSet());
-      } else {
-        getInstance().nsHosts = null;
-      }
-
-      getInstance().nsHostVKeys = forceEmptyToNull(nameservers);
+      getInstance().nsHostObjs =
+          forceEmptyToNull(nameservers).stream()
+              .map(key -> jpaTm().load(key).get())
+              .collect(toImmutableSet());
       return thisCastToDerived();
     }
 

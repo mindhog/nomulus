@@ -133,47 +133,52 @@ public class DomainBaseSqlTest extends EntityTestCase {
 
     long startTime = System.currentTimeMillis();
     for (int i = 0; i < 10000; ++i) {
-      domain =
-          new DomainBase.Builder()
-              .setFullyQualifiedDomainName("example" + i + ".com")
-              .setRepoId(i + "-COM")
-              .setCreationClientId("a registrar")
-              .setLastEppUpdateTime(fakeClock.nowUtc())
-              .setLastEppUpdateClientId("AnotherRegistrar")
-              .setLastTransferTime(fakeClock.nowUtc())
-              .setNameservers(hosts)
-              .setStatusValues(
-                  ImmutableSet.of(
-                      StatusValue.CLIENT_DELETE_PROHIBITED,
-                      StatusValue.SERVER_DELETE_PROHIBITED,
-                      StatusValue.SERVER_TRANSFER_PROHIBITED,
-                      StatusValue.SERVER_UPDATE_PROHIBITED,
-                      StatusValue.SERVER_RENEW_PROHIBITED,
-                      StatusValue.SERVER_HOLD))
-              .setRegistrant(contactKey)
-              .setContacts(ImmutableSet.of(DesignatedContact.create(Type.ADMIN, contact2Key)))
-              .setSubordinateHosts(ImmutableSet.of("ns1.example.com"))
-              .setPersistedCurrentSponsorClientId("losing")
-              .setRegistrationExpirationTime(fakeClock.nowUtc().plusYears(1))
-              .setAuthInfo(DomainAuthInfo.create(PasswordAuth.create("password")))
-              .setDsData(
-                  ImmutableSet.of(DelegationSignerData.create(1, 2, 3, new byte[] {0, 1, 2})))
-              .setLaunchNotice(
-                  LaunchNotice.create("tcnid", "validatorId", START_OF_TIME, START_OF_TIME))
-              .setSmdId("smdid")
-              .build();
-      jpaTm().transact(() -> jpaTm().saveNew(domain));
+      String domainName = "example" + i + ".com";
+      String repoId = i + "-COM";
+      jpaTm().transact(() -> {
+            domain =
+                new DomainBase.Builder()
+                    .setFullyQualifiedDomainName(domainName)
+                    .setRepoId(repoId)
+                    .setCreationClientId("a registrar")
+                    .setLastEppUpdateTime(fakeClock.nowUtc())
+                    .setLastEppUpdateClientId("AnotherRegistrar")
+                    .setLastTransferTime(fakeClock.nowUtc())
+                    .setNameservers(hosts)
+                    .setStatusValues(
+                        ImmutableSet.of(
+                            StatusValue.CLIENT_DELETE_PROHIBITED,
+                            StatusValue.SERVER_DELETE_PROHIBITED,
+                            StatusValue.SERVER_TRANSFER_PROHIBITED,
+                            StatusValue.SERVER_UPDATE_PROHIBITED,
+                            StatusValue.SERVER_RENEW_PROHIBITED,
+                            StatusValue.SERVER_HOLD))
+                    .setRegistrant(contactKey)
+                    .setContacts(ImmutableSet.of(DesignatedContact.create(Type.ADMIN, contact2Key)))
+                    .setSubordinateHosts(ImmutableSet.of("ns1.example.com"))
+                    .setPersistedCurrentSponsorClientId("losing")
+                    .setRegistrationExpirationTime(fakeClock.nowUtc().plusYears(1))
+                    .setAuthInfo(DomainAuthInfo.create(PasswordAuth.create("password")))
+                    .setDsData(
+                        ImmutableSet.of(DelegationSignerData.create(1, 2, 3, new byte[] {0, 1, 2})))
+                    .setLaunchNotice(
+                        LaunchNotice.create("tcnid", "validatorId", START_OF_TIME, START_OF_TIME))
+                    .setSmdId("smdid")
+                    .build();
+            jpaTm().saveNew(domain);
+          });
     }
     long endStorageTime = System.currentTimeMillis();
     System.err.println("storage time: " + (endStorageTime - startTime));
 
     for (int i = 0; i < 10000; ++i) {
       String name = i + "-COM";
-      jpaTm().transact(
-          () -> {
-            DomainBase domain = jpaTm().load(VKey.createSql(DomainBase.class, name)).get();
-            assertThat(domain.getNameservers()).isEqualTo(hosts);
-          });
+      jpaTm()
+          .transact(
+              () -> {
+                DomainBase domain = jpaTm().load(VKey.createSql(DomainBase.class, name)).get();
+                assertThat(domain.getNameservers()).isEqualTo(hosts);
+              });
     }
 
     System.err.println("retrieval time: " + (System.currentTimeMillis() - endStorageTime));
