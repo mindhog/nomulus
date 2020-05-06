@@ -192,7 +192,7 @@ public class DeleteContactsAndHostsActionTest
         loadByForeignKey(DomainBase.class, "example.tld", clock.nowUtc()).get();
     // We have to check for the objectify key here, specifically, as the SQL side of the key does
     // not get persisted.
-    assertThat(domainReloaded.getReferencedContacts()).contains(contactUpdated.createKey());
+    assertThat(domainReloaded.getReferencedContacts()).contains(contactUpdated.createVKey());
     HistoryEntry historyEntry =
         getOnlyHistoryEntryOfType(contactUpdated, HistoryEntry.Type.CONTACT_DELETE_FAILURE);
     assertPollMessageFor(

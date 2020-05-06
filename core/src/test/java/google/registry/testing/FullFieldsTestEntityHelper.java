@@ -359,17 +359,17 @@ public final class FullFieldsTestEntityHelper {
                     StatusValue.SERVER_UPDATE_PROHIBITED))
             .setDsData(ImmutableSet.of(DelegationSignerData.create(1, 2, 3, "deadface")));
     if (registrant != null) {
-      builder.setRegistrant(registrant.createKey());
+      builder.setRegistrant(registrant.createVKey());
     }
     if ((admin != null) || (tech != null)) {
       ImmutableSet.Builder<DesignatedContact> contactsBuilder = new ImmutableSet.Builder<>();
       if (admin != null) {
         contactsBuilder.add(
-            DesignatedContact.create(DesignatedContact.Type.ADMIN, admin.createKey()));
+            DesignatedContact.create(DesignatedContact.Type.ADMIN, admin.createVKey()));
       }
       if (tech != null) {
         contactsBuilder.add(
-            DesignatedContact.create(DesignatedContact.Type.TECH, tech.createKey()));
+            DesignatedContact.create(DesignatedContact.Type.TECH, tech.createVKey()));
       }
       builder.setContacts(contactsBuilder.build());
     }

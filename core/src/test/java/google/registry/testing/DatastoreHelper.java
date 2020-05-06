@@ -145,7 +145,7 @@ public class DatastoreHelper {
 
   public static DomainBase newDomainBase(
       String domainName, String repoId, ContactResource contact) {
-    VKey<ContactResource> contactKey = contact.createKey();
+    VKey<ContactResource> contactKey = contact.createVKey();
     return new DomainBase.Builder()
         .setRepoId(repoId)
         .setFullyQualifiedDomainName(domainName)
@@ -488,11 +488,11 @@ public class DatastoreHelper {
             .setCreationClientId("TheRegistrar")
             .setCreationTimeForTest(creationTime)
             .setRegistrationExpirationTime(expirationTime)
-            .setRegistrant(contact.createKey())
+            .setRegistrant(contact.createVKey())
             .setContacts(
                 ImmutableSet.of(
-                    DesignatedContact.create(Type.ADMIN, contact.createKey()),
-                    DesignatedContact.create(Type.TECH, contact.createKey())))
+                    DesignatedContact.create(Type.ADMIN, contact.createVKey()),
+                    DesignatedContact.create(Type.TECH, contact.createVKey())))
             .setAuthInfo(DomainAuthInfo.create(PasswordAuth.create("fooBAR")))
             .addGracePeriod(
                 GracePeriod.create(GracePeriodStatus.ADD, now.plusDays(10), "foo", null))

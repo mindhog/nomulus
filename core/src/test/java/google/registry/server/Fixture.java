@@ -126,9 +126,9 @@ public enum Fixture {
               .asBuilder()
               .setContacts(
                   ImmutableSet.of(
-                      DesignatedContact.create(ADMIN, robert.createKey()),
-                      DesignatedContact.create(BILLING, google.createKey()),
-                      DesignatedContact.create(TECH, justine.createKey())))
+                      DesignatedContact.create(ADMIN, robert.createVKey()),
+                      DesignatedContact.create(BILLING, google.createVKey()),
+                      DesignatedContact.create(TECH, justine.createVKey())))
               .setNameservers(
                   ImmutableSet.of(
                       persistActiveHost("ns1.love.xn--q9jyb4c").createKey(),
@@ -140,9 +140,9 @@ public enum Fixture {
               .asBuilder()
               .setContacts(
                   ImmutableSet.of(
-                      DesignatedContact.create(ADMIN, robert.createKey()),
-                      DesignatedContact.create(BILLING, google.createKey()),
-                      DesignatedContact.create(TECH, justine.createKey())))
+                      DesignatedContact.create(ADMIN, robert.createVKey()),
+                      DesignatedContact.create(BILLING, google.createVKey()),
+                      DesignatedContact.create(TECH, justine.createVKey())))
               .setNameservers(
                   ImmutableSet.of(
                       persistActiveHost("ns1.linode.com").createKey(),

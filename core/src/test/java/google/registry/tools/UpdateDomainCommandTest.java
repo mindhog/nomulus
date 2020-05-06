@@ -186,10 +186,10 @@ public class UpdateDomainCommandTest extends EppToolCommandTestCase<UpdateDomain
     ContactResource adminContact2 = persistResource(newContactResource("crr-admin2"));
     ContactResource techContact1 = persistResource(newContactResource("crr-tech1"));
     ContactResource techContact2 = persistResource(newContactResource("crr-tech2"));
-    VKey<ContactResource> adminResourceKey1 = adminContact1.createKey();
-    VKey<ContactResource> adminResourceKey2 = adminContact2.createKey();
-    VKey<ContactResource> techResourceKey1 = techContact1.createKey();
-    VKey<ContactResource> techResourceKey2 = techContact2.createKey();
+    VKey<ContactResource> adminResourceKey1 = adminContact1.createVKey();
+    VKey<ContactResource> adminResourceKey2 = adminContact2.createVKey();
+    VKey<ContactResource> techResourceKey1 = techContact1.createVKey();
+    VKey<ContactResource> techResourceKey2 = techContact2.createVKey();
 
     persistResource(
         newDomainBase("example.tld")

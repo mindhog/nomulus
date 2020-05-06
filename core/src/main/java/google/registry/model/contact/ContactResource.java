@@ -31,9 +31,9 @@ import google.registry.model.annotations.ExternalMessagingName;
 import google.registry.model.annotations.ReportedOn;
 import google.registry.model.contact.PostalInfo.Type;
 import google.registry.model.transfer.TransferData;
-import google.registry.schema.replay.DatastoreAndSqlEntity;
 import google.registry.persistence.VKey;
 import google.registry.persistence.WithStringVKey;
+import google.registry.schema.replay.DatastoreAndSqlEntity;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -197,7 +197,7 @@ public class ContactResource extends EppResource
   })
   Disclose disclose;
 
-  public VKey<ContactResource> createKey() {
+  public VKey<ContactResource> createVKey() {
     return VKey.createOfy(ContactResource.class, Key.create(this));
   }
 

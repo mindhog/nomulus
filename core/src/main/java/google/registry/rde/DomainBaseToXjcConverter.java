@@ -171,7 +171,7 @@ final class DomainBaseToXjcConverter {
         if (registrant == null) {
           logger.atWarning().log("Domain %s has no registrant contact.", domainName);
         } else {
-          ContactResource registrantContact = tm().load(registrant).get();
+          ContactResource registrantContact = tm().load(registrant);
           checkState(
               registrantContact != null,
               "Registrant contact %s on domain %s does not exist",
@@ -304,7 +304,7 @@ final class DomainBaseToXjcConverter {
         "Contact key for type %s is null on domain %s",
         model.getType(),
         domainName);
-    ContactResource contact = tm().load(model.getContactKey()).get();
+    ContactResource contact = tm().load(model.getContactKey());
     checkState(
         contact != null,
         "Contact %s on domain %s does not exist",

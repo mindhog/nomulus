@@ -246,7 +246,7 @@ public class DomainBaseToXjcConverterTest {
                                 "5372808-IRL",
                                 "be that word our sign in parting",
                                 "BOFH@cat.みんな")
-                            .createKey()),
+                            .createVKey()),
                     DesignatedContact.create(
                         DesignatedContact.Type.TECH,
                         makeContactResource(
@@ -255,7 +255,7 @@ public class DomainBaseToXjcConverterTest {
                                 "5372808-TRL",
                                 "bird or fiend!? i shrieked upstarting",
                                 "bog@cat.みんな")
-                            .createKey())))
+                            .createVKey())))
             .setCreationClientId("LawyerCat")
             .setCreationTimeForTest(DateTime.parse("1900-01-01T00:00:00Z"))
             .setPersistedCurrentSponsorClientId("GetTheeBack")
@@ -275,7 +275,7 @@ public class DomainBaseToXjcConverterTest {
             .setRegistrant(
                 makeContactResource(
                         clock, "12-Q9JYB4C", "5372808-ERL", "(◕‿◕) nevermore", "prophet@evil.みんな")
-                    .createKey())
+                    .createVKey())
             .setRegistrationExpirationTime(DateTime.parse("1930-01-01T00:00:00Z"))
             .setGracePeriods(
                 ImmutableSet.of(

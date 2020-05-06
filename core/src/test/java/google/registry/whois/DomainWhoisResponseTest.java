@@ -222,9 +222,9 @@ public class DomainWhoisResponseTest {
 
     VKey<HostResource> hostResource1Key = hostResource1.createKey();
     VKey<HostResource> hostResource2Key = hostResource2.createKey();
-    VKey<ContactResource> registrantResourceKey = registrant.createKey();
-    VKey<ContactResource> adminResourceKey = adminContact.createKey();
-    VKey<ContactResource> techResourceKey = techContact.createKey();
+    VKey<ContactResource> registrantResourceKey = registrant.createVKey();
+    VKey<ContactResource> adminResourceKey = adminContact.createVKey();
+    VKey<ContactResource> techResourceKey = techContact.createVKey();
 
     domainBase =
         persistResource(

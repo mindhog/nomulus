@@ -52,6 +52,7 @@ import google.registry.model.registrar.Registrar;
 import google.registry.model.registrar.RegistrarAddress;
 import google.registry.model.registrar.RegistrarContact;
 import google.registry.model.reporting.HistoryEntry;
+import google.registry.persistence.VKey;
 import google.registry.rdap.RdapDataStructures.Event;
 import google.registry.rdap.RdapDataStructures.EventAction;
 import google.registry.rdap.RdapDataStructures.Link;
@@ -350,7 +351,7 @@ public class RdapJsonFormatter {
             .load()
             .keys(
                 domainBase.getReferencedContacts().stream()
-                    .map(key -> key.getOfyKey())
+                    .map(VKey::getOfyKey)
                     .collect(toImmutableSet()));
     // RDAP Response Profile 2.7.3, A domain MUST have the REGISTRANT, ADMIN, TECH roles and MAY
     // have others. We also add the BILLING.

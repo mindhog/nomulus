@@ -187,7 +187,7 @@ public final class ResourceFlowUtils {
     // The roid should match one of the contacts.
     Optional<Key<ContactResource>> foundContact =
         domain.getReferencedContacts().stream()
-            .map(key -> key.getOfyKey())
+            .map(VKey::getOfyKey)
             .filter(key -> key.getName().equals(authRepoId))
             .findFirst();
     if (!foundContact.isPresent()) {

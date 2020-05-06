@@ -110,7 +110,7 @@ public final class DomainInfoFlow implements Flow {
             .setFullyQualifiedDomainName(domain.getFullyQualifiedDomainName())
             .setRepoId(domain.getRepoId())
             .setCurrentSponsorClientId(domain.getCurrentSponsorClientId())
-            .setRegistrant(tm().load(domain.getRegistrant()).get().getContactId());
+            .setRegistrant(tm().load(domain.getRegistrant()).getContactId());
     // If authInfo is non-null, then the caller is authorized to see the full information since we
     // will have already verified the authInfo is valid.
     if (clientId.equals(domain.getCurrentSponsorClientId()) || authInfo.isPresent()) {

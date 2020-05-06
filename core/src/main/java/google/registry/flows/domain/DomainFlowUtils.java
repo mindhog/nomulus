@@ -121,6 +121,7 @@ import google.registry.model.reporting.DomainTransactionRecord;
 import google.registry.model.reporting.DomainTransactionRecord.TransactionReportField;
 import google.registry.model.reporting.HistoryEntry;
 import google.registry.model.tmch.ClaimsListShard;
+import google.registry.persistence.VKey;
 import google.registry.tldconfig.idn.IdnLabelValidator;
 import google.registry.util.Idn;
 import java.math.BigDecimal;
@@ -312,7 +313,7 @@ public class DomainFlowUtils {
     ImmutableList.Builder<Key<? extends EppResource>> keysToLoad = new ImmutableList.Builder<>();
     contacts.stream()
         .map(DesignatedContact::getContactKey)
-        .map(vkey -> vkey.getOfyKey())
+        .map(VKey::getOfyKey)
         .forEach(keysToLoad::add);
     Optional.ofNullable(registrant).ifPresent(keysToLoad::add);
     keysToLoad.addAll(nameservers);
@@ -982,7 +983,7 @@ public class DomainFlowUtils {
     for (DesignatedContact contact : contacts) {
       builder.add(
           ForeignKeyedDesignatedContact.create(
-              contact.getType(), tm().load(contact.getContactKey()).get().getContactId()));
+              contact.getType(), tm().load(contact.getContactKey()).getContactId()));
     }
     return builder.build();
   }

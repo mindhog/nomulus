@@ -64,7 +64,7 @@ final class RdeFixtures {
             .setRepoId(generateNewDomainRoid(tld))
             .setRegistrant(
                 makeContactResource(clock, "5372808-ERL", "(◕‿◕) nevermore", "prophet@evil.みんな")
-                    .createKey())
+                    .createVKey())
             .build();
     HistoryEntry historyEntry =
         persistResource(new HistoryEntry.Builder().setParent(domain).build());
@@ -94,7 +94,7 @@ final class RdeFixtures {
                                 "5372808-IRL",
                                 "be that word our sign in parting",
                                 "BOFH@cat.みんな")
-                            .createKey()),
+                            .createVKey()),
                     DesignatedContact.create(
                         DesignatedContact.Type.TECH,
                         makeContactResource(
@@ -102,7 +102,7 @@ final class RdeFixtures {
                                 "5372808-TRL",
                                 "bird or fiend!? i shrieked upstarting",
                                 "bog@cat.みんな")
-                            .createKey())))
+                            .createVKey())))
             .setCreationClientId("TheRegistrar")
             .setPersistedCurrentSponsorClientId("TheRegistrar")
             .setCreationTimeForTest(clock.nowUtc())
