@@ -19,7 +19,7 @@ ALTER TABLE "DomainHost" DROP CONSTRAINT fk_domainhost_host_valid;
 ALTER TABLE "HostResource" DROP CONSTRAINT "HostResource_pkey";
 DROP TABLE "HostResource";
 
-create table "Host" (
+CREATE TABLE "Host" (
    repo_id text not null,
     update_timestamp timestamptz,
     creation_registrar_id text not null,
