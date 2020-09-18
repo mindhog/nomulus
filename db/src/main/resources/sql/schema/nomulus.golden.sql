@@ -539,19 +539,19 @@ ALTER SEQUENCE public."GracePeriod_id_seq" OWNED BY public."GracePeriod".id;
 
 CREATE TABLE public."Host" (
     repo_id text NOT NULL,
-    update_timestamp timestamp with time zone,
-    creation_registrar_id text NOT NULL,
-    creation_time timestamp with time zone NOT NULL,
-    current_sponsor_registrar_id text NOT NULL,
+    creation_registrar_id text,
+    creation_time timestamp with time zone,
+    current_sponsor_registrar_id text,
     deletion_time timestamp with time zone,
     last_epp_update_registrar_id text,
     last_epp_update_time timestamp with time zone,
     statuses text[],
     host_name text,
-    inet_addresses text[],
     last_superordinate_change timestamp with time zone,
     last_transfer_time timestamp with time zone,
-    superordinate_domain text
+    superordinate_domain text,
+    inet_addresses text[],
+    update_timestamp timestamp with time zone
 );
 
 
