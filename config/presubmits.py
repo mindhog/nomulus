@@ -179,7 +179,7 @@ PRESUBMITS = {
         "JavaScript files should not include console logging."
 }
 
-# Note that this regex only works for one kind of flyway file.  If we want to
+# Note that this regex only works for one kind of Flyway file.  If we want to
 # start using "R" and "U" files we'll need to update this script.
 FLYWAY_FILE_RX = re.compile(r'V(\d+)__.*')
 
@@ -188,7 +188,7 @@ def get_seqnum(filename: str, location: str) -> int:
   """Extracts the sequence number from a filename."""
   m = FLYWAY_FILE_RX.match(filename)
   if m is None:
-    raise ValueError('Illegal flyway filename: %s in %s' % (filename, location))
+    raise ValueError('Illegal Flyway filename: %s in %s' % (filename, location))
   return int(m.group(1))
 
 
@@ -201,7 +201,7 @@ def has_valid_order(indexed_files: List[Tuple[int, str]], location: str) -> bool
   """Verify that sequence numbers are in order without gaps or duplicates.
 
   Args:
-    files: List of seqnum, filename for a list of flyway files.
+    files: List of seqnum, filename for a list of Flyway files.
     location: Where the list of files came from (for error reporting).
 
   Returns:
@@ -211,14 +211,14 @@ def has_valid_order(indexed_files: List[Tuple[int, str]], location: str) -> bool
   valid = True
   for seqnum, filename in indexed_files:
     if seqnum == last_index:
-      print('duplicate flyway file sequence number found in %s: %s' %
+      print('duplicate Flyway file sequence number found in %s: %s' %
             (location, filename))
       valid = False
     elif seqnum < last_index:
       print('File %s in %s is out of order.' % (filename, location))
       valid = False
     elif seqnum != last_index + 1:
-      print('Missing flyway sequence number %d in %s.  Next file is %s' %
+      print('Missing Flyway sequence number %d in %s.  Next file is %s' %
             (last_index + 1, location, filename))
       valid = False
     last_index = seqnum
@@ -226,43 +226,42 @@ def has_valid_order(indexed_files: List[Tuple[int, str]], location: str) -> bool
 
 
 def verify_flyway_index():
-  """Verifies that the flyway index file is in sync with the directory."""
-  fail = False
+  """Verifies that the Flyway index file is in sync with the directory."""
+  success = True
 
-  # Sort the files in the flyway directory by their sequence number.
+  # Sort the files in the Flyway directory by their sequence number.
   files = sorted(
       files_by_seqnum(os.listdir('db/src/main/resources/sql/flyway'),
-                      'flyway directory'))
+                      'Flyway directory'))
 
   # Make sure that there are no gaps and no duplicate sequence numbers in the
   # files themselves.
-  if not has_valid_order(files, 'flyway directory'):
-    fail = True
+  if not has_valid_order(files, 'Flyway directory'):
+    success = False
 
   # Remove the sequence numbers and compare against the index file contents.
   files = [filename[1] for filename in sorted(files)]
-  with open('db/src/main/resources/sql/flyway.idx') as index:
+  with open('db/src/main/resources/sql/flyway.txt') as index:
     indexed_files = index.read().splitlines()
   if files != indexed_files:
     unindexed = set(files) - set(indexed_files)
     if unindexed:
-      print('The following flyway files are not in flyway.idx: %s' % unindexed)
+      print('The following Flyway files are not in flyway.txt: %s' % unindexed)
 
     nonexistent = set(indexed_files) - set(files)
     if nonexistent:
-      print('The following files are in flyway.idx but not in the flyway '
+      print('The following files are in flyway.txt but not in the Flyway '
             'directory: %s' % nonexistent)
 
     # Do an ordering check on the index file (ignore the result, we're failing
     # anyway).
-    has_valid_order(files_by_seqnum(indexed_files, 'flyway.idx'), 'flyway.idx')
-    fail = True
+    has_valid_order(files_by_seqnum(indexed_files, 'flyway.txt'), 'flyway.txt')
+    success = False
 
-  if fail:
-    print('Please fix any conflicts and run "./nom_build '
-          ':db:generateFlywayIndex"')
+  if not success:
+    print('Please fix any conflicts and run "./nom_build :db:generateFlywayIndex"')
 
-  return fail
+  return not success
 
 
 def get_files():
@@ -283,7 +282,7 @@ if __name__ == "__main__":
       failed = True
       print("%s had errors: \n  %s" % (file, "\n  ".join(error_messages)))
 
-  # And now for something completely different: check to see if the flyway
+  # And now for something completely different: check to see if the Flyway
   # index is up-to-date.  It's quicker to do it here than in the unit tests:
   # when we put it here it fails fast before all of the tests are run.
   failed |= verify_flyway_index()
