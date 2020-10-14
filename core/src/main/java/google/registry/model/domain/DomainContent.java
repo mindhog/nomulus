@@ -317,9 +317,6 @@ public class DomainContent extends EppResource
     autorenewPollMessageHistoryId = getHistoryId(autorenewPollMessage);
     autorenewBillingEventHistoryId = getHistoryId(autorenewBillingEvent);
     deletePollMessageHistoryId = getHistoryId(deletePollMessage);
-    if (transferData != null) {
-      transferData.onLoad();
-    }
     dsData =
         nullToEmptyImmutableCopy(dsData).stream()
             .map(dsData -> dsData.cloneWithDomainRepoId(getRepoId()))

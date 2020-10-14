@@ -16,6 +16,7 @@ package google.registry.model.transfer;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.googlecode.objectify.Key;
+import com.googlecode.objectify.annotation.AlsoLoad;
 import com.googlecode.objectify.annotation.Embed;
 import com.googlecode.objectify.annotation.Ignore;
 import com.googlecode.objectify.annotation.IgnoreSave;
@@ -143,16 +144,19 @@ public class DomainTransferData extends TransferData<DomainTransferData.Builder>
             rootKey, serverApproveAutorenewPollMessage, serverApproveAutorenewPollMessageHistoryId);
   }
 
-  /**
-   * Restores the history id fields after loading from Datastore.
-   *
-   * <p>This is for use by DomainContent's OnLoad method ONLY.
-   */
-  public void onLoad() {
-    serverApproveBillingEventHistoryId = DomainBase.getHistoryId(serverApproveBillingEvent);
-    serverApproveAutorenewEventHistoryId = DomainBase.getHistoryId(serverApproveAutorenewEvent);
-    serverApproveAutorenewPollMessageHistoryId =
-        DomainBase.getHistoryId(serverApproveAutorenewPollMessage);
+  private void loadServerApproveBillingEventHistoryId(
+      @AlsoLoad("serverApproveBillingEvent") VKey<BillingEvent.OneTime> val) {
+    serverApproveBillingEventHistoryId = DomainBase.getHistoryId(val);
+  }
+
+  private void loadServerApproveAutorenewEventHistoryId(
+      @AlsoLoad("serverApproveAutorenewEvent") VKey<BillingEvent.Recurring> val) {
+    serverApproveAutorenewEventHistoryId = DomainBase.getHistoryId(val);
+  }
+
+  private void loadServerApproveAutorenewPollMessageHistoryId(
+      @AlsoLoad("serverApproveAutorenewPollMessage") VKey<PollMessage.Autorenew> val) {
+    serverApproveAutorenewPollMessageHistoryId = DomainBase.getHistoryId(val);
   }
 
   public Period getTransferPeriod() {
