@@ -27,7 +27,6 @@ import com.google.common.base.Splitter;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.util.concurrent.UncheckedExecutionException;
@@ -39,12 +38,7 @@ import com.googlecode.objectify.mapper.Mapper;
 import google.registry.model.Buildable;
 import google.registry.model.registry.Registry;
 import google.registry.model.registry.label.DomainLabelMetrics.MetricsReservedListMatch;
-<<<<<<< HEAD
 import google.registry.schema.replay.NonReplicatedEntity;
-=======
-import google.registry.schema.replay.DatastoreAndSqlEntity;
-import google.registry.schema.replay.SqlEntity;
->>>>>>> 1aa54ebd1 (Small SQL persistence fixes to model classes)
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -322,10 +316,5 @@ public final class ReservedList
     public Builder setReservedListMapFromLines(Iterable<String> lines) {
       return setReservedListMap(getInstance().parse(lines));
     }
-  }
-
-  @Override
-  public ImmutableList<SqlEntity> toSqlEntities() {
-    return ImmutableList.of();
   }
 }

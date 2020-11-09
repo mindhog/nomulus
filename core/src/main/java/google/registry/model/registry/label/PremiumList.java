@@ -444,11 +444,6 @@ public final class PremiumList extends BaseDomainLabelList<Money, PremiumList.Pr
     }
   }
 
-  @Override
-  public ImmutableList<SqlEntity> toSqlEntities() {
-    return ImmutableList.of();
-  }
-
   @PrePersist
   void prePersist() {
     lastUpdateTime = creationTime;
