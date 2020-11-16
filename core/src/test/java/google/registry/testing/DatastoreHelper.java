@@ -1198,6 +1198,9 @@ public class DatastoreHelper {
     if (tm().isOfy()) {
       result = tm().transact(() -> ofy().load().fromEntity(ofy().save().toEntity(resource)));
     } else {
+      // We have to separate the read and write operation into different transactions
+      // otherwise JPA would just return the input entity instead of actually creating a
+      // clone.
       tm().transact(() -> tm().put(resource));
       result = tm().transact(() -> tm().load(resource));
     }
