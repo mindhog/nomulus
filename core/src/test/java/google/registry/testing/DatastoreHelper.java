@@ -1194,14 +1194,13 @@ public class DatastoreHelper {
 
   /** Force the create and update timestamps to get written into the resource. **/
   public static <R> R cloneAndSetAutoTimestamps(final R resource) {
-    R result =
-        tm().transact(
-                tm().isOfy()
-                    ? () -> ofy().load().fromEntity(ofy().save().toEntity(resource))
-                    : () -> {
-                      tm().put(resource);
-                      return tm().load(resource);
-                    });
+    R result;
+    if (tm().isOfy()) {
+      result = tm().transact(() -> ofy().load().fromEntity(ofy().save().toEntity(resource)));
+    } else {
+      tm().transact(() -> tm().put(resource));
+      result = tm().transact(() -> tm().load(resource));
+    }
     maybeAdvanceClock();
     return result;
   }
