@@ -23,19 +23,27 @@ import static google.registry.model.ofy.CommitLogBucket.getArbitraryBucketId;
 import static google.registry.model.ofy.ObjectifyService.ofy;
 import static google.registry.persistence.transaction.TransactionManagerFactory.jpaTm;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Streams;
 import com.googlecode.objectify.Key;
 import google.registry.persistence.VKey;
 import google.registry.schema.replay.DatastoreEntity;
 import google.registry.schema.replay.SqlEntity;
+import java.util.IntSummaryStatistics;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.joda.time.DateTime;
 
 /** Metadata for an {@link Ofy} transaction that saves commit logs. */
 class TransactionInfo {
 
-  private enum Delete { SENTINEL }
+  @VisibleForTesting
+  enum Delete {
+    SENTINEL
+  }
 
   /** Logical "now" of the transaction. */
   DateTime transactionTime;
@@ -100,20 +108,29 @@ class TransactionInfo {
   // Mapping from class name to "weight" (which in this case is the order in which the class must
   // be "put" in a transaction with respect to instances of other classes).  Lower weight classes
   // are put first, by default all classes have a weight of zero.
+  @VisibleForTesting
   static final ImmutableMap<String, Integer> CLASS_WEIGHTS =
       ImmutableMap.of(
           "HistoryEntry", -1,
           "DomainBase", 1);
 
   // The beginning of the range of weights reserved for delete.  This must be greater than any of
-  // the values in CLASS_WEIGHTS.
-  static final int DELETE_RANGE =
-      CLASS_WEIGHTS.values().stream().mapToInt(Integer::intValue).max().getAsInt() + 1;
+  // the values in CLASS_WEIGHTS by enough overhead to accomodate any negative values in it.
+  static final int DELETE_RANGE = calculateDeleteRangeStart(CLASS_WEIGHTS);
+
+  @VisibleForTesting
+  static int calculateDeleteRangeStart(ImmutableMap<String, Integer> map) {
+    IntSummaryStatistics stats =
+        Streams.concat(map.values().stream(), Stream.of(0))
+            .collect(Collectors.summarizingInt(Integer::intValue));
+    return stats.getMax() - stats.getMin() + 1;
+  }
 
   /** Returns the weight of the entity type in the map entry. */
-  private static int getWeight(ImmutableMap.Entry<Key<?>, Object> entry) {
+  @VisibleForTesting
+  static int getWeight(ImmutableMap.Entry<Key<?>, Object> entry) {
     int weight = CLASS_WEIGHTS.getOrDefault(entry.getKey().getKind(), 0);
-    return entry.getValue().equals(Delete.SENTINEL) ? DELETE_RANGE + -weight : weight;
+    return entry.getValue().equals(Delete.SENTINEL) ? DELETE_RANGE - weight : weight;
   }
 
   private static int compareByWeight(
