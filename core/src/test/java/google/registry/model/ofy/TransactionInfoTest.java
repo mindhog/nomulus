@@ -30,17 +30,6 @@ class TransactionInfoTest {
   AppEngineExtension appEngine = new AppEngineExtension.Builder().withDatastore().build();
 
   @Test
-  void testDeleteCalculation() {
-    // Test the default class weights, which range from -1 to 1.
-    assertThat(TransactionInfo.calculateDeleteRangeStart(TransactionInfo.CLASS_WEIGHTS))
-        .isEqualTo(3);
-
-    // Verify that this works with an implicit weight of zero.
-    assertThat(TransactionInfo.calculateDeleteRangeStart(ImmutableMap.of("foo", 10, "bar", 20)))
-        .isEqualTo(41);
-  }
-
-  @Test
   void testGetWeight() {
     // just verify that the lowest is what we expect for both save and delete and verify that the
     // Registrar class is zero.
@@ -49,7 +38,8 @@ class TransactionInfoTest {
             Key.create(HistoryEntry.class, 100), TransactionInfo.Delete.SENTINEL,
             Key.create(HistoryEntry.class, 200), "fake history entry",
             Key.create(Registrar.class, 300), "fake registrar");
-    ImmutableMap<Long, Integer> expectedValues = ImmutableMap.of(100L, 4, 200L, -1, 300L, 0);
+    ImmutableMap<Long, Integer> expectedValues =
+        ImmutableMap.of(100L, TransactionInfo.DELETE_RANGE + 1, 200L, -1, 300L, 0);
 
     for (ImmutableMap.Entry<Key<?>, Object> entry : actions.entrySet()) {
       assertThat(TransactionInfo.getWeight(entry))
