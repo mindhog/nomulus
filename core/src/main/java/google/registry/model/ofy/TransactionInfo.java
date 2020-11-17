@@ -123,7 +123,7 @@ class TransactionInfo {
     IntSummaryStatistics stats =
         Streams.concat(map.values().stream(), Stream.of(0))
             .collect(Collectors.summarizingInt(Integer::intValue));
-    return stats.getMax() - stats.getMin() + 1;
+    return stats.getMax() * 2 + 1;
   }
 
   /** Returns the weight of the entity type in the map entry. */

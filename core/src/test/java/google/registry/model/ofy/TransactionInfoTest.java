@@ -37,7 +37,7 @@ class TransactionInfoTest {
 
     // Verify that this works with an implicit weight of zero.
     assertThat(TransactionInfo.calculateDeleteRangeStart(ImmutableMap.of("foo", 10, "bar", 20)))
-        .isEqualTo(21);
+        .isEqualTo(41);
   }
 
   @Test
