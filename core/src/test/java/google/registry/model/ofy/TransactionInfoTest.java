@@ -45,9 +45,10 @@ class TransactionInfoTest {
     // just verify that the lowest is what we expect for both save and delete and verify that the
     // Registrar class is zero.
     ImmutableMap<Key<?>, Object> actions =
-        ImmutableMap.of(Key.create(HistoryEntry.class, 100), TransactionInfo.Delete.SENTINEL,
-                        Key.create(HistoryEntry.class, 200), "fake history entry",
-                        Key.create(Registrar.class, 300), "fake registrar");
+        ImmutableMap.of(
+            Key.create(HistoryEntry.class, 100), TransactionInfo.Delete.SENTINEL,
+            Key.create(HistoryEntry.class, 200), "fake history entry",
+            Key.create(Registrar.class, 300), "fake registrar");
     ImmutableMap<Long, Integer> expectedValues = ImmutableMap.of(100L, 4, 200L, -1, 300L, 0);
 
     for (ImmutableMap.Entry<Key<?>, Object> entry : actions.entrySet()) {
