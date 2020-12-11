@@ -81,7 +81,6 @@ public class UpdateAutoTimestampTest {
 
   @TestOfyAndSql
   void testDisabledUpdates() throws Exception {
-
     DateTime initialTime =
         tm().transact(
                 () -> {
