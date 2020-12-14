@@ -46,6 +46,8 @@ public class UpdateAutoTimestamp extends ImmutableObject {
     return instance;
   }
 
+  // TODO(b/175610935): Remove the auto-update disabling code below after migration.
+
   /** Class to allow us to safely disable auto-update in a try-with-resources block. */
   public static class DisableAutoUpdateResource implements AutoCloseable {
     DisableAutoUpdateResource() {
