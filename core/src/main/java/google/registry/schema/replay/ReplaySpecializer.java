@@ -14,7 +14,6 @@
 
 package google.registry.schema.replay;
 
-import com.google.common.flogger.FluentLogger;
 import google.registry.persistence.VKey;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
