@@ -54,6 +54,7 @@ import javax.persistence.Index;
 import javax.persistence.PostLoad;
 import javax.persistence.PostPersist;
 import javax.persistence.PrePersist;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import org.hibernate.LazyInitializationException;
@@ -324,6 +325,13 @@ public final class PremiumList extends BaseDomainLabelList<Money, PremiumList.Pr
   @PostLoad
   void postLoad() {
     creationTime = lastUpdateTime;
+  }
+
+  @PreRemove
+  void preDelete() {
+    jpaTm().query("DELETE FROM PremiumEntry WHERE revision_id = :revisionId")
+        .setParameter("revisionId", revisionId)
+        .executeUpdate();
   }
 
   // We need to persist the list entries, but only on the initial insert (not on update) since the
