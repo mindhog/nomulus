@@ -16,9 +16,12 @@ package google.registry.model.registry.label;
 
 import static com.google.common.base.Charsets.US_ASCII;
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.collect.ImmutableMap.toImmutableMap;
 import static com.google.common.hash.Funnels.stringFunnel;
 import static com.google.common.hash.Funnels.unencodedCharsFunnel;
 import static google.registry.model.ofy.ObjectifyService.allocateId;
+import static google.registry.persistence.transaction.QueryComposer.Comparator.EQ;
+import static google.registry.persistence.transaction.TransactionManagerFactory.jpaTm;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
@@ -36,6 +39,7 @@ import google.registry.model.annotations.ReportedOn;
 import google.registry.model.registry.Registry;
 import google.registry.schema.replay.DatastoreOnlyEntity;
 import google.registry.schema.replay.NonReplicatedEntity;
+import google.registry.schema.tld.PremiumEntry;
 import google.registry.schema.tld.PremiumListDao;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -45,13 +49,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import javax.annotation.Nullable;
-import javax.persistence.CollectionTable;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Index;
-import javax.persistence.JoinColumn;
-import javax.persistence.MapKeyColumn;
 import javax.persistence.PostLoad;
+import javax.persistence.PostPersist;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -81,14 +82,10 @@ public final class PremiumList extends BaseDomainLabelList<Money, PremiumList.Pr
   @Column(nullable = false)
   CurrencyUnit currency;
 
-  @Ignore
-  @ElementCollection
-  @CollectionTable(
-      name = "PremiumEntry",
-      joinColumns = @JoinColumn(name = "revisionId", referencedColumnName = "revisionId"))
-  @MapKeyColumn(name = "domainLabel")
-  @Column(name = "price", nullable = false)
-  Map<String, BigDecimal> labelsToPrices;
+  // This field requires special treatment since we want to lazy load it.  We have to remove it from
+  // the immutability contract so we can modify it after construction and we have to handle the
+  // database processing on our own so we can detach it after load.
+  @Ignore @ImmutableObject.Insignificant @Transient ImmutableMap<String, BigDecimal> labelsToPrices;
 
   @Ignore
   @Column(nullable = false)
@@ -176,8 +173,16 @@ public final class PremiumList extends BaseDomainLabelList<Money, PremiumList.Pr
    * them. To check prices, use {@link PremiumListDao#getPremiumPrice} instead.
    */
   @Nullable
-  public ImmutableMap<String, BigDecimal> getLabelsToPrices() {
-    return labelsToPrices == null ? null : ImmutableMap.copyOf(labelsToPrices);
+  public synchronized ImmutableMap<String, BigDecimal> getLabelsToPrices() {
+    if (labelsToPrices == null) {
+      labelsToPrices =
+          jpaTm()
+              .createQueryComposer(PremiumEntry.class)
+              .where("revisionId", EQ, revisionId)
+              .stream()
+              .collect(toImmutableMap(PremiumEntry::getDomainLabel, PremiumEntry::getPrice));
+    }
+    return labelsToPrices;
   }
 
   /**
@@ -319,5 +324,19 @@ public final class PremiumList extends BaseDomainLabelList<Money, PremiumList.Pr
   @PostLoad
   void postLoad() {
     creationTime = lastUpdateTime;
+  }
+
+  // We need to persist the list entries, but only on the initial insert (not on update) since the
+  // entries themselves never get changed.
+  @PostPersist
+  void postPersist() {
+    // If the price map is loaded, persist it too.
+    if (labelsToPrices != null) {
+      labelsToPrices.entrySet().stream()
+          .forEach(
+              entry ->
+                  jpaTm()
+                      .insert(PremiumEntry.create(revisionId, entry.getValue(), entry.getKey())));
+    }
   }
 }
