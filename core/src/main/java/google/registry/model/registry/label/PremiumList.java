@@ -329,7 +329,8 @@ public final class PremiumList extends BaseDomainLabelList<Money, PremiumList.Pr
 
   @PreRemove
   void preDelete() {
-    jpaTm().query("DELETE FROM PremiumEntry WHERE revision_id = :revisionId")
+    jpaTm()
+        .query("DELETE FROM PremiumEntry WHERE revision_id = :revisionId")
         .setParameter("revisionId", revisionId)
         .executeUpdate();
   }
