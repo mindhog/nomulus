@@ -177,7 +177,6 @@ public final class PremiumList extends BaseDomainLabelList<Money, PremiumList.Pr
    * using this anyway as it's inefficient to load all of the PremiumEntry rows if you don't need
    * them. To check prices, use {@link PremiumListDao#getPremiumPrice} instead.
    */
-  @Nullable
   public synchronized ImmutableMap<String, BigDecimal> getLabelsToPrices() {
     if (labelsToPrices == null) {
       labelsToPrices =
@@ -332,7 +331,7 @@ public final class PremiumList extends BaseDomainLabelList<Money, PremiumList.Pr
   }
 
   @PreRemove
-  void preDelete() {
+  void preRemove() {
     jpaTm()
         .query("DELETE FROM PremiumEntry WHERE revision_id = :revisionId")
         .setParameter("revisionId", revisionId)
