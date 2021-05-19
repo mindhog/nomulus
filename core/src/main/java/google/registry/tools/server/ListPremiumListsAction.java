@@ -64,7 +64,7 @@ public final class ListPremiumListsAction extends ListObjectsAction<PremiumList>
 
   /**
    * Provide a field override for labelsToPrices, since it is an {@code Insignificant} field and
-   * doesn't get returned from {@link google.registry.model.ImmutableObject.toDiffableFieldMap()}.
+   * doesn't get returned from {@link google.registry.model.ImmutableObject#toDiffableFieldMap}.
    */
   @Override
   public ImmutableMap<String, String> getFieldOverrides(PremiumList list) {

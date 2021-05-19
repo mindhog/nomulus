@@ -83,9 +83,13 @@ public final class PremiumList extends BaseDomainLabelList<Money, PremiumList.Pr
   @Column(nullable = false)
   CurrencyUnit currency;
 
-  // This field requires special treatment since we want to lazy load it.  We have to remove it from
-  // the immutability contract so we can modify it after construction and we have to handle the
-  // database processing on our own so we can detach it after load.
+  /**
+   * Mapping from unqualified domain names to their prices.
+   *
+   * <p>This field requires special treatment since we want to lazy load it.  We have to remove it
+   * from the immutability contract so we can modify it after construction and we have to handle the
+   * database processing on our own so we can detach it after load.
+   */
   @Ignore @ImmutableObject.Insignificant @Transient ImmutableMap<String, BigDecimal> labelsToPrices;
 
   @Ignore
@@ -335,8 +339,14 @@ public final class PremiumList extends BaseDomainLabelList<Money, PremiumList.Pr
         .executeUpdate();
   }
 
-  // We need to persist the list entries, but only on the initial insert (not on update) since the
-  // entries themselves never get changed.
+  /**
+   * Hibernate hook called on the insert of a new PremiumList.  Stores the associated
+   * {@link PremiumEntry}'s.
+   *
+   * <p>We need to persist the list entries, but only on the initial insert (not on update) since
+   * the entries themselves never get changed, so we only annotate it with {@link PostPersist}, not
+   * {@link PostUpdate}.
+   */
   @PostPersist
   void postPersist() {
     // If the price map is loaded, persist it too.
