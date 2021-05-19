@@ -172,10 +172,9 @@ public final class PremiumList extends BaseDomainLabelList<Money, PremiumList.Pr
   /**
    * Returns a {@link Map} of domain labels to prices.
    *
-   * <p>Note that this is lazily loaded and thus will throw a {@link LazyInitializationException} if
-   * used outside the transaction in which the given entity was loaded. You generally should not be
-   * using this anyway as it's inefficient to load all of the PremiumEntry rows if you don't need
-   * them. To check prices, use {@link PremiumListDao#getPremiumPrice} instead.
+   * <p>Note that this is lazily loaded and thus must be called inside a transaction. You generally
+   * should not be using this anyway as it's inefficient to load all of the PremiumEntry rows if
+   * you don't need them. To check prices, use {@link PremiumListDao#getPremiumPrice} instead.
    */
   public synchronized ImmutableMap<String, BigDecimal> getLabelsToPrices() {
     if (labelsToPrices == null) {
