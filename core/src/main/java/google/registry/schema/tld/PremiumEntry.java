@@ -16,7 +16,7 @@ package google.registry.schema.tld;
 
 import google.registry.model.ImmutableObject;
 import google.registry.model.registry.label.PremiumList;
-import google.registry.schema.replay.NonReplicatedEntity;
+import google.registry.schema.replay.SqlOnlyEntity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import javax.persistence.Column;
@@ -29,7 +29,7 @@ import javax.persistence.Id;
  * <p>These are not persisted directly, but rather, using {@link PremiumList#getLabelsToPrices()}.
  */
 @Entity
-public class PremiumEntry extends ImmutableObject implements NonReplicatedEntity, Serializable {
+public class PremiumEntry extends ImmutableObject implements Serializable, SqlOnlyEntity {
 
   @Id
   @Column(nullable = false)

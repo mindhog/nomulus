@@ -57,7 +57,6 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreRemove;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import org.hibernate.LazyInitializationException;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
 
@@ -86,7 +85,7 @@ public final class PremiumList extends BaseDomainLabelList<Money, PremiumList.Pr
   /**
    * Mapping from unqualified domain names to their prices.
    *
-   * <p>This field requires special treatment since we want to lazy load it.  We have to remove it
+   * <p>This field requires special treatment since we want to lazy load it. We have to remove it
    * from the immutability contract so we can modify it after construction and we have to handle the
    * database processing on our own so we can detach it after load.
    */
@@ -173,8 +172,8 @@ public final class PremiumList extends BaseDomainLabelList<Money, PremiumList.Pr
    * Returns a {@link Map} of domain labels to prices.
    *
    * <p>Note that this is lazily loaded and thus must be called inside a transaction. You generally
-   * should not be using this anyway as it's inefficient to load all of the PremiumEntry rows if
-   * you don't need them. To check prices, use {@link PremiumListDao#getPremiumPrice} instead.
+   * should not be using this anyway as it's inefficient to load all of the PremiumEntry rows if you
+   * don't need them. To check prices, use {@link PremiumListDao#getPremiumPrice} instead.
    */
   public synchronized ImmutableMap<String, BigDecimal> getLabelsToPrices() {
     if (labelsToPrices == null) {
@@ -338,8 +337,8 @@ public final class PremiumList extends BaseDomainLabelList<Money, PremiumList.Pr
   }
 
   /**
-   * Hibernate hook called on the insert of a new PremiumList.  Stores the associated
-   * {@link PremiumEntry}'s.
+   * Hibernate hook called on the insert of a new PremiumList. Stores the associated {@link
+   * PremiumEntry}'s.
    *
    * <p>We need to persist the list entries, but only on the initial insert (not on update) since
    * the entries themselves never get changed, so we only annotate it with {@link PostPersist}, not
