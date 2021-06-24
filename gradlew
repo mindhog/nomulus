@@ -24,7 +24,7 @@
 
 # Add a test filter so that we only run one of the failing tests.
 set -- "$@" \
-    -PtestFilter=DeleteContactsAndHostsActionTest \
+    -PtestFilter=RdapDomainSearchActionTest,DeleteContactsAndHostsActionTest \
     -PverboseTestOutput=true
 
 # Attempt to set APP_HOME
