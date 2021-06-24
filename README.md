@@ -8,7 +8,7 @@
 
 ## Overview
 
-NOTE: this is a branch to allow me to do some debugging within the kokoro runs.
+# NOTE: this is a branch to allow me to do some debugging within the kokoro runs.
 
 Nomulus is an open source, scalable, cloud-based service for operating
 [top-level domains](https://en.wikipedia.org/wiki/Top-level_domain) (TLDs). It
